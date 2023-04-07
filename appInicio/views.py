@@ -27,14 +27,6 @@ from appUsuario.user_decorator import validarPermisosEcosapp
 
 
 # Create your views here.
-def pdf_view(request, url):
-    file_path = os.path.join(settings.MEDIA_ROOT, '', url)
-    with open(file_path, 'rb') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = f'inline; filename="{os.path.basename(file_path)}"'
-        return response
-
-
 @validarPermisosEcosapp()
 def inicio(request):
     _data = []
@@ -67,6 +59,14 @@ def inicio(request):
     }
     return render(request, "inicio.html", context=_context)
 
+
+def pdf_view(request, url):
+    file_path = os.path.join(settings.MEDIA_ROOT, url)
+    with open(file_path, 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{os.path.basename(file_path)}"'
+        return response
+        
 def enviarCorreoCliente(request):
     _enviado = None
     _respuesta = 0

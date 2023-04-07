@@ -825,29 +825,40 @@
             .appendTo(container);
         },
         onClick: function (e) {
-          $.ajax({
-            url: "{% url 'pdf_view' 0 %}".replace('/0', '/' + e.row.data.ficha),
-            type: 'GET',
-            xhrFields: {
-              responseType: 'blob'
-            },
-            success: function (data) {
-              console.log(data)
-              if (data.size) {
-                var pdfUrl = window.URL.createObjectURL(data);
-                window.open(pdfUrl);
-              } else {
-                notify = new PNotify({
-                  title: 'Acción no ejecutada',
-                  text: 'Cámara no tiene ficha',
-                  type: 'error',
-                  styling: 'bootstrap3',
-                  delay: 3000
-                });
-              }
+          if (e.row.data.ficha) {
+            $.ajax({
+              url: "{% url 'pdf_view' 0 %}".replace('/0', '/' + e.row.data.ficha),
+              type: 'GET',
+              xhrFields: {
+                responseType: 'blob'
+              },
+              success: function (data) {
+                console.log(data)
+                if (data.size) {
+                  var pdfUrl = window.URL.createObjectURL(data);
+                  window.open(pdfUrl);
+                } else {
+                  notify = new PNotify({
+                    title: 'Acción no ejecutada',
+                    text: 'Cámara no tiene ficha',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                    delay: 3000
+                  });
+                }
 
-            },
-          });
+              },
+            });
+          }else{
+            notify = new PNotify({
+              title: 'Acción no ejecutada',
+              text: 'Cámara no tiene ficha',
+              type: 'error',
+              styling: 'bootstrap3',
+              delay: 3000
+            });
+          }
+
         },
       }, {
         hint: "Enviar Cotización",
