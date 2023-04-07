@@ -468,7 +468,6 @@
   $('#btn_enviar_correo').click(function () {
     const formulario = $('#formEnviarCorreoCliente')
     if (formulario.parsley().validate()) {
-      console.log($("#numero-camara").val())
       $("#btn_enviar_correo").hide()
       $("#btn_enviando_correo").show()
       $.post(formulario.attr('action'), formulario.serialize(), function (response) {
@@ -649,7 +648,6 @@
   }
 
   function guardarFichaCamara() {
-    alert('1')
     const formulario = $('#formSubirFicha');
     if (formulario.parsley().validate()) {
       $("#btn-guardar-ficha").hide()
