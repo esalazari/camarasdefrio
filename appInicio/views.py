@@ -1,6 +1,9 @@
 from decimal import Decimal
+import logging
 from django.conf import settings
-from django.http import JsonResponse
+from django.views.static import serve
+import os
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
@@ -8,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from decouple import config
+import openpyxl
 
 ## NEW
 from email.message import EmailMessage
@@ -23,6 +27,14 @@ from appUsuario.user_decorator import validarPermisosEcosapp
 
 
 # Create your views here.
+def pdf_view(request, url):
+    file_path = os.path.join(settings.MEDIA_ROOT, '', url)
+    with open(file_path, 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{os.path.basename(file_path)}"'
+        return response
+
+
 @validarPermisosEcosapp()
 def inicio(request):
     _data = []
@@ -159,4 +171,83 @@ def cambiarPrecioCamara(request):
         except:
             _respuesta = False
     json = { 'respuesta': _respuesta, 'valor': _valor }
+    return JsonResponse(json, safe=False)
+
+
+#FUNCIONES PARA CARGAR CONTACTOS
+def cargarMasivaCamaras(request):
+    _post = False
+    _respuesta = True
+    _registro_existentes = 0
+    _registro_agregados = 0
+    _registro_totales = 0
+    if request.method == 'POST':        
+        _documento = request.FILES.get('excel')
+        _libro = openpyxl.load_workbook( _documento, data_only=True )
+        #CARGA DE PROPUESTAS
+        _hoja_activa = _libro['Sheet']
+        _general = 0
+        _total = 0
+        _error = 0
+        for _indice, _fila in enumerate( _hoja_activa.iter_rows( values_only = True ) ):
+            if _indice > 0:
+                try:
+                    _nombre  = _fila[1]
+                    _m2 = Decimal(_fila[2])
+                    _m3 = Decimal(_fila[3])
+                    _neto = Decimal(round(_fila[4]))
+                    _iva = _neto * (Decimal(1.19))
+                    
+                    _item = {
+                        'nombre' : _nombre,
+                        'm2' : _m2,
+                        'm3' : _m3,
+                        'valorNeto' : _neto,
+                        'valorIva': _iva
+                    }
+                    _camara = Camara.objects.filter(nombre = _nombre)
+
+                    if not _camara:
+                        _camara = Camara.objects.create(**_item)
+                        _total += 1
+
+                except Exception as e:
+                    print(e)
+                    logging.error('[CAMARA] ' + str(e) + ' ID->' + str(_fila[0]))
+                    _error += 1
+            _general += 1
+            
+        print('CAMARAS')
+        print('GENERAL: ',_general)
+        print('TOTAL: ',_total)
+        print('ERROR: ',_error)
+
+    _context = {
+        'post' : _post,
+        'existentes' : _registro_existentes,
+        'agregados' : _registro_agregados,
+        'no_agregados' : _registro_totales - _registro_agregados - _registro_existentes,
+        'total' : _registro_totales,
+        'respuesta' : _respuesta
+    }
+    return render(request, "cargar_camaras.html", context=_context)
+
+def guardarFichaCamara(request):
+    _respuesta = False
+    print('funcion ficha')
+    if request.method == 'POST':
+        print('1')
+        _camara = Camara.objects.get(id=request.POST.get('camara'))
+        print(_camara)
+        _ficha = request.FILES["ficha"]
+        print(_ficha)
+        print('2')
+
+        try:
+            _camara.ficha = _ficha
+            _camara.save()
+            _respuesta = True
+        except:
+            _respuesta = False
+    json = { 'respuesta': _respuesta }
     return JsonResponse(json, safe=False)

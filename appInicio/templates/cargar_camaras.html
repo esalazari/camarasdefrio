@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Cargar Camaras{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block breadcrumb %}
+<div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-style1 mg-b-5">
+            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cargar Camaras</li>
+        </ol>
+    </nav>
+    <h4 #class="mg-b-20">Importar carga de camaras masiva</h4>
+</div>
+{% endblock %}
+{% block container %}
+
+<div data-label="" class="df-example demo-forms">
+    <form id="formulario" method="POST" enctype="multipart/form-data" data-parsley-validate>
+        {% csrf_token%}
+        <div class="form-group row">
+            <label for="excel" class="col-md-2 col-form-label">Importar Excel<span class="tx-danger">*</span></label>
+            <div class="col-md-6 col-sm-9">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input evidencia-input" id="excel" name="excel" required=""
+                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                    <label class="custom-file-label" id="label-excel" for="excel"
+                        data-browse="Buscar">Seleccionar</label>
+                </div>
+            </div>
+            <div class="col-md-2"><button type="button" id="cargarDocumento" class="btn btn-primary" onclick="cargarDocumento()"><i
+                        data-feather="save"></i> Cargar</button></div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block modales %}
+{% endblock %}
+
+{% block partial_js_script %}
+<script>
+
+    $('input[type="file"]').change(function (e) {
+        var name = e.target.files[0].name;
+        $("#label-excel").html(name);
+
+    });
+
+    var post = ('{{post}}' == 'True') ? true : false;
+    var respuesta = ('{{respuesta}}' == 'True') ? true : false;
+
+    if (post) {
+        if (!respuesta) {
+            notify = new PNotify({
+                title: 'Acción no ejecutada',
+                text: 'No se ha podido realizar la acción',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 3000
+            });
+        }
+        else {
+            notify = new PNotify({
+                title: 'Acción exitosa',
+                text: 'Se han ingresado correctamente los datos',
+                type: 'success',
+                styling: 'bootstrap3',
+                delay: 3000
+            });
+        }
+    }
+
+    $('#cargarDocumento').click(function () {
+        $('#formulario').submit();
+    });
+</script>
+{% endblock %}

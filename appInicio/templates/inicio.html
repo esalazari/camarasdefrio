@@ -45,7 +45,8 @@
 <br><br><br>
 
 <!-- Modal -->
-<div class="modal fade" id="modalEnviarCorreo" tabindex="-1" aria-labelledby="modalEnviarCorreoLabel" aria-hidden="true">
+<div class="modal fade" id="modalEnviarCorreo" tabindex="-1" aria-labelledby="modalEnviarCorreoLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -53,10 +54,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="formEnviarCorreoCliente" method="POST" action="{% url 'envio-correo-cliente' %}" data-parsley-validate>
+        <form id="formEnviarCorreoCliente" method="POST" action="{% url 'envio-correo-cliente' %}"
+          data-parsley-validate>
           {% csrf_token%}
           <input type="hidden" id="numero-camara" name="numero-camara">
-          
+
           <!-- <div style="padding-left: 7px;" class="form-group row">
             <div class="form-check">
               <div class="col-sm-4">
@@ -69,15 +71,18 @@
           </div> -->
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="id-check-datos-cliente" name="check-datos-cliente" onchange="mostrarFormularioCliente()">
+            <input class="form-check-input" type="checkbox" id="id-check-datos-cliente" name="check-datos-cliente"
+              onchange="mostrarFormularioCliente()">
             <label class="form-check-label" for="id-check-datos-cliente">Cliente</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="id-check-datos-observacion" name="check-datos-observacion" onchange="mostrarFormularioObservacion()">
+            <input class="form-check-input" type="checkbox" id="id-check-datos-observacion"
+              name="check-datos-observacion" onchange="mostrarFormularioObservacion()">
             <label class="form-check-label" for="id-check-datos-observacion">Observación</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="id-check-datos-descuento" name="check-datos-descuento" onchange="mostrarFormularioDescuento()">
+            <input class="form-check-input" type="checkbox" id="id-check-datos-descuento" name="check-datos-descuento"
+              onchange="mostrarFormularioDescuento()">
             <label class="form-check-label" for="id-check-datos-descuento">Descuento</label>
           </div>
           <br>
@@ -87,57 +92,59 @@
             <div class="form-group row">
               <label for="id-nombre" class="col-sm-3 col-form-label">Nombre<span class="tx-danger">*</span></label>
               <div class="col-sm-9">
-                  <input type="text" class="form-control" id='id-nombre' name='nombre'>
+                <input type="text" class="form-control" id='id-nombre' name='nombre'>
               </div>
             </div>
             <br>
             <div class="form-group row">
-                <label for="id-rut" class="col-sm-3 col-form-label">Rut<span class="tx-danger">*</span></label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id='id-rut' name='rut'>
-                </div>
+              <label for="id-rut" class="col-sm-3 col-form-label">Rut<span class="tx-danger">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id='id-rut' name='rut'>
+              </div>
             </div>
             <br>
             <div class="form-group row">
-                <label for="id-giro" class="col-sm-3 col-form-label">Giro Comercial<span class="tx-danger">*</span></label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id='id-giro' name='giro'>
-                </div>
+              <label for="id-giro" class="col-sm-3 col-form-label">Giro Comercial<span
+                  class="tx-danger">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id='id-giro' name='giro'>
+              </div>
             </div>
             <br>
             <div class="form-group row">
-                <label for="id-region" class="col-sm-3 col-form-label">Región<span class="tx-danger">*</span></label>
-                <div class="col-sm-9 mg-0 pd-0">
-                  <select class="form-select" id="id-region" name="region" onchange="buscarComunas(this)" required>
-                      <option value="-1" selected>Seleccionar</option>
-                      {% for region in regiones %}
-                      <option value="{{region.id}}">{{region.nombre}}</option>
-                      {% endfor %}
-                  </select>
-                </div>
+              <label for="id-region" class="col-sm-3 col-form-label">Región<span class="tx-danger">*</span></label>
+              <div class="col-sm-9 mg-0 pd-0">
+                <select class="form-select" id="id-region" name="region" onchange="buscarComunas(this)" required>
+                  <option value="-1" selected>Seleccionar</option>
+                  {% for region in regiones %}
+                  <option value="{{region.id}}">{{region.nombre}}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
             <br>
             <div class="form-group row">
               <label for="id-comuna" class="col-sm-3 col-form-label">Comuna<span class="tx-danger">*</span></label>
               <div class="col-sm-9 mg-0 pd-0">
                 <select class="form-select" id="id-comuna" name="comuna" disabled required>
-                    <option value="-1" selected>Seleccionar</option>
+                  <option value="-1" selected>Seleccionar</option>
                 </select>
               </div>
             </div>
             <br>
             <div class="form-group row">
-                <label for="id-direccion" class="col-sm-3 col-form-label">Dirección<span class="tx-danger">*</span></label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id='id-direccion' name='direccion'>
-                </div>
+              <label for="id-direccion" class="col-sm-3 col-form-label">Dirección<span
+                  class="tx-danger">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id='id-direccion' name='direccion'>
+              </div>
             </div>
             <br>
             <div class="form-group row">
-                <label for="id-telefono" class="col-sm-3 col-form-label">Telefono<span class="tx-danger">*</span></label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id='id-telefono' name='telefono'>
-                </div>
+              <label for="id-telefono" class="col-sm-3 col-form-label">Telefono<span class="tx-danger">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id='id-telefono' name='telefono'>
+              </div>
             </div>
             <br>
           </div>
@@ -151,40 +158,44 @@
             </div>
             <br>
           </div>
-          
+
           <div class="container-formulario-descuento" id="id-container-formulario-descuento" hidden>
             <div class="form-group row">
-                <label for="id-rut" class="col-sm-3 col-form-label">Descuento<span class="tx-danger">*</span></label>
-                <div class="col-sm-9">
-                    <input type="number" class="form-control" id='id-descuento' name='descuento' placeholder="%">
-                </div>
+              <label for="id-rut" class="col-sm-3 col-form-label">Descuento<span class="tx-danger">*</span></label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" id='id-descuento' name='descuento' placeholder="%">
+              </div>
             </div>
             <br>
           </div>
           <div class="form-group row">
             <br>
-            <label for="id-correo-cliente" class="col-sm-3 col-form-label">Correo Electronico<span class="tx-danger">*</span></label>
+            <label for="id-correo-cliente" class="col-sm-3 col-form-label">Correo Electronico<span
+                class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="email" class="form-control" id='id-correo-cliente' name='correo-cliente' required>
+              <input type="email" class="form-control" id='id-correo-cliente' name='correo-cliente' required>
             </div>
           </div>
           <br>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+            class="fa-regular fa-circle-xmark"></i> Cerrar</button>
         <button class="btn btn-primary" id="btn_enviando_correo" type="button" disabled>
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           Enviando...
         </button>
-        <button type="button" class="btn btn-primary" id="btn_enviar_correo"><i class="fa-solid fa-envelope"></i> Enviar Cotización</button>
+        <button type="button" class="btn btn-primary" id="btn_enviar_correo"><i class="fa-solid fa-envelope"></i> Enviar
+          Cotización</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalAgregarCamara" tabindex="-1" aria-labelledby="modalAgregarCamaraLabel" aria-hidden="true">
+<div class="modal fade" id="modalAgregarCamara" tabindex="-1" aria-labelledby="modalAgregarCamaraLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -192,33 +203,35 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="formEnviarGuardarCamara" enctype="multipart/form-data" data-parsley-validate >
+        <form id="formEnviarGuardarCamara" enctype="multipart/form-data" data-parsley-validate>
           {% csrf_token%}
           <div class="form-group row">
             <label for="id-nombre-camara" class="col-sm-3 col-form-label">Nombre<span class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id='id-nombre-camara' name='nombre-camara' required>
+              <input type="text" class="form-control" id='id-nombre-camara' name='nombre-camara' required>
             </div>
           </div>
           <br>
           <div class="form-group row">
-            <label for="id-metro-cuadrado" class="col-sm-3 col-form-label">Metro cuadrado<span class="tx-danger">*</span></label>
+            <label for="id-metro-cuadrado" class="col-sm-3 col-form-label">Metro cuadrado<span
+                class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id='id-metro-cuadrado' name='metro-cuadrado' required>
+              <input type="text" class="form-control" id='id-metro-cuadrado' name='metro-cuadrado' required>
             </div>
           </div>
           <br>
           <div class="form-group row">
-            <label for="id-metro-cubico" class="col-sm-3 col-form-label">Metro cubico<span class="tx-danger">*</span></label>
+            <label for="id-metro-cubico" class="col-sm-3 col-form-label">Metro cubico<span
+                class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id='id-metro-cubico' name='metro-cubico' required>
+              <input type="text" class="form-control" id='id-metro-cubico' name='metro-cubico' required>
             </div>
           </div>
           <br>
           <div class="form-group row">
             <label for="id-valor" class="col-sm-3 col-form-label">Valor Neto<span class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id='id-valor' name='valor' required>
+              <input type="text" class="form-control" id='id-valor' name='valor' required>
             </div>
           </div>
           <br>
@@ -232,19 +245,22 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+            class="fa-regular fa-circle-xmark"></i> Cerrar</button>
         <button class="btn btn-primary" id="btn_guardando_camara" type="button" disabled>
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           Cargando...
         </button>
-        <button type="button" class="btn btn-primary" id="btn_guardar_camara" onclick="guardaCamaraDeFrio()"><i class="fa-solid fa-floppy-disk"></i> Guardar Camara</button>
+        <button type="button" class="btn btn-primary" id="btn_guardar_camara" onclick="guardaCamaraDeFrio()"><i
+            class="fa-solid fa-floppy-disk"></i> Guardar Camara</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MODAL CAMBIAR KM-->
-<div class="modal fade" id="modalCambiarValorKM" tabindex="-1" aria-labelledby="modalCambiarValorKMLabel" aria-hidden="true">
+<div class="modal fade" id="modalCambiarValorKM" tabindex="-1" aria-labelledby="modalCambiarValorKMLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -252,37 +268,42 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="formCambiarValorKM" enctype="multipart/form-data" data-parsley-validate >
+        <form id="formCambiarValorKM" enctype="multipart/form-data" data-parsley-validate>
           {% csrf_token%}
           <div class="form-group row">
             <label for="id-valor-actual" class="col-sm-3 col-form-label">Valor Actual</label>
             <div class="col-sm-9">
-                <input type="number" class="form-control" id='id-valor-actual' value="{{valor_km}}" name='valor-actual' readonly>
+              <input type="number" class="form-control" id='id-valor-actual' value="{{valor_km}}" name='valor-actual'
+                readonly>
             </div>
           </div>
           <br>
           <div class="form-group row">
-            <label for="id-valor-nuevo" class="col-sm-3 col-form-label">Nuevo Valor<span class="tx-danger">*</span></label>
+            <label for="id-valor-nuevo" class="col-sm-3 col-form-label">Nuevo Valor<span
+                class="tx-danger">*</span></label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id='id-valor-nuevo' name='valor-nuevo' required>
+              <input type="text" class="form-control" id='id-valor-nuevo' name='valor-nuevo' required>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+            class="fa-regular fa-circle-xmark"></i> Cerrar</button>
         <button class="btn btn-primary" id="btn_guardando_valor" type="button" disabled>
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           Cargando...
         </button>
-        <button type="button" class="btn btn-primary" id="btn_guardar_valor" onclick="cambiarValorKilometro()"><i class="fa-solid fa-floppy-disk"></i> Guardar Valor</button>
+        <button type="button" class="btn btn-primary" id="btn_guardar_valor" onclick="cambiarValorKilometro()"><i
+            class="fa-solid fa-floppy-disk"></i> Guardar Valor</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MODAL SUBIR O BAJAR PRECIOS-->
-<div class="modal fade" id="modalSubirBajarPrecio" tabindex="-1" aria-labelledby="modalSubirBajarPrecioLabel" aria-hidden="true">
+<div class="modal fade" id="modalSubirBajarPrecio" tabindex="-1" aria-labelledby="modalSubirBajarPrecioLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -290,23 +311,74 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="formCambiarPrecioCamara" enctype="multipart/form-data" data-parsley-validate >
+        <form id="formCambiarPrecioCamara" enctype="multipart/form-data" data-parsley-validate>
           {% csrf_token%}
           <div class="form-group row">
-              <label for="id-valor-nuevo" class="col-sm-3 col-form-label">Porcentaje<span class="tx-danger">*</span></label>
-              <div class="col-sm-2">
-                  <input type="number" class="form-control" id='id-precio-nuevo' placeholder="%" name='precio-nuevo' step="0.0000000001" required>
-              </div>
+            <label for="id-valor-nuevo" class="col-sm-3 col-form-label">Porcentaje<span
+                class="tx-danger">*</span></label>
+            <div class="col-sm-2">
+              <input type="number" class="form-control" id='id-precio-nuevo' placeholder="%" name='precio-nuevo'
+                step="0.0000000001" required>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+            class="fa-regular fa-circle-xmark"></i> Cerrar</button>
         <button class="btn btn-primary" id="btn_guardando_precio" type="button" disabled>
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           Cargando...
         </button>
-        <button type="button" class="btn btn-primary" id="btn_guardar_precio" onclick="cambiaPrecioCamaras()"><i class="fa-solid fa-floppy-disk"></i> Cambiar Valor</button>
+        <button type="button" class="btn btn-primary" id="btn_guardar_precio" onclick="cambiaPrecioCamaras()"><i
+            class="fa-solid fa-floppy-disk"></i> Cambiar Valor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR FICHA -->
+<div class="modal fade" id="modalSubirFicha" tabindex="-1" aria-labelledby="modalSubirFichaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSubirFichaTitulo">Agregar Ficha</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formSubirFicha" enctype="multipart/form-data" data-parsley-validate>
+          {% csrf_token%}
+          <div class="form-group row">
+            <label for="id-ficha-camara" class="col-sm-3 col-form-label">Cámara<span class="tx-danger">*</span></label>
+            <div class="col-sm-9 mg-0 pd-0">
+              <select class="form-select" id="id-ficha-camara" name="ficha-camara" required>
+                <option value="-1" selected>Seleccionar</option>
+                {% for camara in camaras %}
+                <option value="{{camara.id}}">{{camara.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="form-group row">
+            <label for="imagen-agregar-ficha" class="col-sm-3 col-form-label">Guía<span
+                class="tx-danger">*</span></label>
+            <div class="col-sm-9">
+              <input class="form-control form-control-md" id="imagen-agregar-ficha" name="imagen-agregar-ficha"
+                type="file" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+            class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+        <button class="btn btn-primary" id="btn-guardando-ficha" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Cargando...
+        </button>
+        <button type="button" class="btn btn-primary" id="btn-guardar-ficha" onclick="guardarFichaCamara()"><i
+            class="fa-solid fa-floppy-disk"></i> Agregar</button>
       </div>
     </div>
   </div>
@@ -315,217 +387,222 @@
 
 {% block partial_js_script %}
 <script>
-$("#btn_guardando_camara").hide()
-$("#btn_enviando_correo").hide()
-$("#btn_guardando_valor").hide()
-$("#btn_guardando_precio").hide()
+  $("#btn_guardando_camara").hide()
+  $("#btn_enviando_correo").hide()
+  $("#btn_guardando_valor").hide()
+  $("#btn_guardando_precio").hide()
+  $("#btn-guardando-ficha").hide()
 
-function mostrarFormularioCliente(){
+  function mostrarFormularioCliente() {
     var checkBox_cliente = document.getElementById("id-check-datos-cliente");
     // If the checkbox is checked, display the output text
-    if (checkBox_cliente.checked == true){
-        $("#id-container-formulario-cliente").attr('hidden', false)
-        $("#id-nombre").attr('required', true)
-        $("#id-rut").attr('required', true)
-        $("#id-direccion").attr('required', true)
-        $("#id-telefono").attr('required', true)
-        $("#id-giro").attr('required', true)
-        $("#id-comuna").attr('required', true)
-        $("#id-region").attr('required', true)
+    if (checkBox_cliente.checked == true) {
+      $("#id-container-formulario-cliente").attr('hidden', false)
+      $("#id-nombre").attr('required', true)
+      $("#id-rut").attr('required', true)
+      $("#id-direccion").attr('required', true)
+      $("#id-telefono").attr('required', true)
+      $("#id-giro").attr('required', true)
+      $("#id-comuna").attr('required', true)
+      $("#id-region").attr('required', true)
     } else {
-        $("#id-container-formulario-cliente").attr('hidden', true)
-        $("#id-nombre").attr('required', false)
-        $("#id-rut").attr('required', false)
-        $("#id-direccion").attr('required', false)
-        $("#id-telefono").attr('required', false)
-        $("#id-giro").attr('required', false)
-        $("#id-comuna").attr('required', false)
-        $("#id-region").attr('required', false)
+      $("#id-container-formulario-cliente").attr('hidden', true)
+      $("#id-nombre").attr('required', false)
+      $("#id-rut").attr('required', false)
+      $("#id-direccion").attr('required', false)
+      $("#id-telefono").attr('required', false)
+      $("#id-giro").attr('required', false)
+      $("#id-comuna").attr('required', false)
+      $("#id-region").attr('required', false)
     }
-}
+  }
 
-function mostrarFormularioDescuento(){
+  function mostrarFormularioDescuento() {
     var checkBox_descuento = document.getElementById("id-check-datos-descuento");
     // If the checkbox is checked, display the output text
-    if (checkBox_descuento.checked == true){
-        $("#id-container-formulario-descuento").attr('hidden', false)
-        $("#id-descuento").attr('required', true)
+    if (checkBox_descuento.checked == true) {
+      $("#id-container-formulario-descuento").attr('hidden', false)
+      $("#id-descuento").attr('required', true)
     } else {
-        $("#id-container-formulario-descuento").attr('hidden', true)
-        $("#id-descuento").attr('required', false)
+      $("#id-container-formulario-descuento").attr('hidden', true)
+      $("#id-descuento").attr('required', false)
     }
-}
+  }
 
-function mostrarFormularioObservacion(){
+  function mostrarFormularioObservacion() {
     var checkBox_observacion = document.getElementById("id-check-datos-observacion");
     // If the checkbox is checked, display the output text
-    if (checkBox_observacion.checked == true){
-        $("#id-container-formulario-observacion").attr('hidden', false)
-        $("#id-observacion").attr('required', true)
+    if (checkBox_observacion.checked == true) {
+      $("#id-container-formulario-observacion").attr('hidden', false)
+      $("#id-observacion").attr('required', true)
     } else {
-        $("#id-container-formulario-observacion").attr('hidden', true)
-        $("#id-observacion").attr('required', false)
+      $("#id-container-formulario-observacion").attr('hidden', true)
+      $("#id-observacion").attr('required', false)
     }
-}
+  }
 
-function separadorMiles(numero){
-  return numero.toLocaleString('en-US')
-}
+  function separadorMiles(numero) {
+    return numero.toLocaleString('en-US')
+  }
 
-function abrirModalEnviarCorreo(value) {
-  $("#numero-camara").val(value)
-}
+  function abrirModalEnviarCorreo(value) {
+    $("#numero-camara").val(value)
+  }
 
-function abrirModalAgregarCamara(){
-  $('#modalAgregarCamara').modal('show');
-}
+  function abrirModalAgregarCamara() {
+    $('#modalAgregarCamara').modal('show');
+  }
 
-function abrirModalCambiarValorKm(){
-  $('#modalCambiarValorKM').modal('show');
-}
+  function abrirModalCambiarValorKm() {
+    $('#modalCambiarValorKM').modal('show');
+  }
 
-function abrirModalSubirBajarValor(){
-  $('#modalSubirBajarPrecio').modal('show');
-}
+  function abrirModalSubirBajarValor() {
+    $('#modalSubirBajarPrecio').modal('show');
+  }
 
-$('#btn_enviar_correo').click(function () {
-  const formulario = $('#formEnviarCorreoCliente')
-  if (formulario.parsley().validate()) {
-    console.log($("#numero-camara").val())
-    $("#btn_enviar_correo").hide()
-    $("#btn_enviando_correo").show()
-    $.post(formulario.attr('action'), formulario.serialize(), function (response) {
-      $("#btn_enviar_correo").show()
-      $("#btn_enviando_correo").hide()
-      $('#modalEnviarCorreo').modal('hide');
-      if(!response.respuesta == 0 && response.enviado == true){
-        notify = new PNotify({
+  function abrirModalAgregarFicha() {
+    $('#modalSubirFicha').modal('show');
+  }
+
+  $('#btn_enviar_correo').click(function () {
+    const formulario = $('#formEnviarCorreoCliente')
+    if (formulario.parsley().validate()) {
+      console.log($("#numero-camara").val())
+      $("#btn_enviar_correo").hide()
+      $("#btn_enviando_correo").show()
+      $.post(formulario.attr('action'), formulario.serialize(), function (response) {
+        $("#btn_enviar_correo").show()
+        $("#btn_enviando_correo").hide()
+        $('#modalEnviarCorreo').modal('hide');
+        if (!response.respuesta == 0 && response.enviado == true) {
+          notify = new PNotify({
             title: 'Acción exitosa',
             text: 'Correo enviado correctamente',
             type: 'success',
             styling: 'bootstrap3',
             delay: 3000
-        });
-      }else{
-        notify = new PNotify({
+          });
+        } else {
+          notify = new PNotify({
             title: 'Acción no se ha ejecutado',
             text: 'No se ha podido realizar la acción',
             type: 'error',
             styling: 'bootstrap3',
             delay: 3000
-        });
-      }
-    })
-  }
-});
+          });
+        }
+      })
+    }
+  });
 
-function guardaCamaraDeFrio(){
-  const formulario = $('#formEnviarGuardarCamara'); 
-  if (formulario.parsley().validate()) {
-    $("#btn_guardar_camara").hide()
-    $("#btn_guardando_camara").show()
-    let formData = new FormData();
-    formData.append('csrfmiddlewaretoken', formulario.find('input[name = csrfmiddlewaretoken]').val());
-    formData.append('nombre', formulario.find('input[name = nombre-camara]').val());
-    formData.append('m2', formulario.find('input[name = metro-cuadrado]').val());
-    formData.append('m3', formulario.find('input[name = metro-cubico]').val());
-    formData.append('neto', formulario.find('input[name = valor]').val());
-    formData.append('guia', formulario.find('input[name = imagen_guia]')[0].files[0]);
+  function guardaCamaraDeFrio() {
+    const formulario = $('#formEnviarGuardarCamara');
+    if (formulario.parsley().validate()) {
+      $("#btn_guardar_camara").hide()
+      $("#btn_guardando_camara").show()
+      let formData = new FormData();
+      formData.append('csrfmiddlewaretoken', formulario.find('input[name = csrfmiddlewaretoken]').val());
+      formData.append('nombre', formulario.find('input[name = nombre-camara]').val());
+      formData.append('m2', formulario.find('input[name = metro-cuadrado]').val());
+      formData.append('m3', formulario.find('input[name = metro-cubico]').val());
+      formData.append('neto', formulario.find('input[name = valor]').val());
+      formData.append('guia', formulario.find('input[name = imagen_guia]')[0].files[0]);
 
-    $.ajax({
-    url: "{% url 'guardar-camara-frio' %}",
-    type: 'POST',
-    data: formData,
-    dataType: "json",
-    success: function (data) {
-      setTimeout(function(){
-        $("#btn_guardar_camara").show()
-        $("#btn_guardando_camara").hide()
-        $('#modalAgregarCamara').modal('hide');
-        document.getElementById("formEnviarGuardarCamara").reset();
-        if (data.respuesta==true) {
-            formulario.parsley().reset()
-            notify = new PNotify({
+      $.ajax({
+        url: "{% url 'guardar-camara-frio' %}",
+        type: 'POST',
+        data: formData,
+        dataType: "json",
+        success: function (data) {
+          setTimeout(function () {
+            $("#btn_guardar_camara").show()
+            $("#btn_guardando_camara").hide()
+            $('#modalAgregarCamara').modal('hide');
+            document.getElementById("formEnviarGuardarCamara").reset();
+            if (data.respuesta == true) {
+              formulario.parsley().reset()
+              notify = new PNotify({
                 title: 'Acción Exitosa!',
                 text: 'Se ha guardado la camara correctamente',
                 type: 'success',
                 styling: 'bootstrap3',
                 delay: 3000
-            });    
-        }else{
-          notify = new PNotify({
-              title: 'Error!',
-              text: 'ha ocurrido un error!',
-              type: 'error',
-              styling: 'bootstrap3',
-              delay: 3000
-          });  
-        }
-        $("#tablaCamaras").dxDataGrid("instance").refresh();
-      }, 2000)
-    },
-    // Tell jQuery not to process data or worry about content-type
-    // You must include these options!
-    cache: false,
-    contentType: false,
-    processData: false,
-})
-}
-}
+              });
+            } else {
+              notify = new PNotify({
+                title: 'Error!',
+                text: 'ha ocurrido un error!',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            }
+            $("#tablaCamaras").dxDataGrid("instance").refresh();
+          }, 2000)
+        },
+        // Tell jQuery not to process data or worry about content-type
+        // You must include these options!
+        cache: false,
+        contentType: false,
+        processData: false,
+      })
+    }
+  }
 
-function cambiarValorKilometro(){
-  const formulario = $('#formCambiarValorKM'); 
-  if (formulario.parsley().validate()) {
-    $("#btn_guardar_valor").hide()
-    $("#btn_guardando_valor").show()
-    let formData = new FormData();
-    formData.append('csrfmiddlewaretoken', formulario.find('input[name = csrfmiddlewaretoken]').val());
-    formData.append('valor', formulario.find('input[name = valor-nuevo]').val());
+  function cambiarValorKilometro() {
+    const formulario = $('#formCambiarValorKM');
+    if (formulario.parsley().validate()) {
+      $("#btn_guardar_valor").hide()
+      $("#btn_guardando_valor").show()
+      let formData = new FormData();
+      formData.append('csrfmiddlewaretoken', formulario.find('input[name = csrfmiddlewaretoken]').val());
+      formData.append('valor', formulario.find('input[name = valor-nuevo]').val());
 
-    $.ajax({
-    url: "{% url 'cambiar-valor-km' %}",
-    type: 'POST',
-    data: formData,
-    dataType: "json",
-    success: function (data) {
-      setTimeout(function(){
-        $("#btn_guardar_valor").show()
-        $("#btn_guardando_valor").hide()
-        $('#modalCambiarValorKM').modal('hide');
-        document.getElementById("formCambiarValorKM").reset();
-        if (data.respuesta==true) {
-          $("#id-valor-actual").val(data.valor)
-          notify = new PNotify({
-              title: 'Acción Exitosa!',
-              text: 'Se ha cambiado el valor correctamente',
-              type: 'success',
-              styling: 'bootstrap3',
-              delay: 3000
-          });    
-        }else{
-          notify = new PNotify({
-              title: 'Error!',
-              text: 'ha ocurrido un error!',
-              type: 'error',
-              styling: 'bootstrap3',
-              delay: 3000
-          });  
-        }
-        $("#tablaCamaras").dxDataGrid("instance").refresh();
-      }, 2000)
-    },
-    // Tell jQuery not to process data or worry about content-type
-    // You must include these options!
-    cache: false,
-    contentType: false,
-    processData: false,
-})
-}
-}
+      $.ajax({
+        url: "{% url 'cambiar-valor-km' %}",
+        type: 'POST',
+        data: formData,
+        dataType: "json",
+        success: function (data) {
+          setTimeout(function () {
+            $("#btn_guardar_valor").show()
+            $("#btn_guardando_valor").hide()
+            $('#modalCambiarValorKM').modal('hide');
+            document.getElementById("formCambiarValorKM").reset();
+            if (data.respuesta == true) {
+              $("#id-valor-actual").val(data.valor)
+              notify = new PNotify({
+                title: 'Acción Exitosa!',
+                text: 'Se ha cambiado el valor correctamente',
+                type: 'success',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            } else {
+              notify = new PNotify({
+                title: 'Error!',
+                text: 'ha ocurrido un error!',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            }
+            $("#tablaCamaras").dxDataGrid("instance").refresh();
+          }, 2000)
+        },
+        // Tell jQuery not to process data or worry about content-type
+        // You must include these options!
+        cache: false,
+        contentType: false,
+        processData: false,
+      })
+    }
+  }
 
-function cambiaPrecioCamaras(){
-  const formulario = $('#formCambiarPrecioCamara'); 
-  if (formulario.parsley().validate()) {
+  function cambiaPrecioCamaras() {
+    const formulario = $('#formCambiarPrecioCamara');
+    if (formulario.parsley().validate()) {
       $("#btn_guardar_precio").hide()
       $("#btn_guardando_precio").show()
       let formData = new FormData();
@@ -537,27 +614,27 @@ function cambiaPrecioCamaras(){
         data: formData,
         dataType: "json",
         success: function (data) {
-          setTimeout(function(){
+          setTimeout(function () {
             $("#btn_guardar_precio").show()
             $("#btn_guardando_precio").hide()
             $('#modalSubirBajarPrecio').modal('hide');
             document.getElementById("formCambiarPrecioCamara").reset();
-            if (data.respuesta==true) {
+            if (data.respuesta == true) {
               notify = new PNotify({
-                  title: 'Acción Exitosa!',
-                  text: 'Se ha actualizado los valores de las camaras',
-                  type: 'success',
-                  styling: 'bootstrap3',
-                  delay: 3000
-              });    
-            }else{
+                title: 'Acción Exitosa!',
+                text: 'Se ha actualizado los valores de las camaras',
+                type: 'success',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            } else {
               notify = new PNotify({
-                  title: 'Error!',
-                  text: 'ha ocurrido un error!',
-                  type: 'error',
-                  styling: 'bootstrap3',
-                  delay: 3000
-              });  
+                title: 'Error!',
+                text: 'ha ocurrido un error!',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
             }
             $("#tablaCamaras").dxDataGrid("instance").refresh();
           }, 2000)
@@ -567,54 +644,104 @@ function cambiaPrecioCamaras(){
         cache: false,
         contentType: false,
         processData: false,
-    })
+      })
+    }
   }
-}
 
-function buscarComunas(value) {
-  var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-  var _region = value.value
-  if(_region>0){
-    $.ajax({
-      url: "{% url 'json-listar-comunas' 0 %}".replace('/0', '/'+_region),
-      type: "POST",
-      headers: { "X-CSRFToken": csrftoken },
-      success: function (data) {
-        if (data.respuesta) {
-          $('#id-comuna').prop('disabled', false);
-          $('#id-comuna').html('').select({
+  function guardarFichaCamara() {
+    alert('1')
+    const formulario = $('#formSubirFicha');
+    if (formulario.parsley().validate()) {
+      $("#btn-guardar-ficha").hide()
+      $("#btn-guardando-ficha").show()
+      let formData = new FormData();
+      formData.append('csrfmiddlewaretoken', formulario.find('input[name = csrfmiddlewaretoken]').val());
+      formData.append('camara', formulario.find('select[name = ficha-camara]').val());
+      formData.append('ficha', formulario.find('input[name = imagen-agregar-ficha]')[0].files[0]);
+      $.ajax({
+        url: "{% url 'guardar-ficha-camara' %}",
+        type: 'POST',
+        data: formData,
+        dataType: "json",
+        success: function (data) {
+          setTimeout(function () {
+            $("#btn-guardar-ficha").show()
+            $("#btn-guardando-ficha").hide()
+            $('#modalSubirFicha').modal('hide');
+            document.getElementById("formSubirFicha").reset();
+            if (data.respuesta == true) {
+              notify = new PNotify({
+                title: 'Acción Exitosa!',
+                text: 'Se ha agregado la ficha a la camara',
+                type: 'success',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            } else {
+              notify = new PNotify({
+                title: 'Error!',
+                text: 'ha ocurrido un error!',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 3000
+              });
+            }
+            $("#tablaCamaras").dxDataGrid("instance").refresh();
+          }, 2000)
+        },
+        // Tell jQuery not to process data or worry about content-type
+        // You must include these options!
+        cache: false,
+        contentType: false,
+        processData: false,
+      })
+    }
+  }
+
+  function buscarComunas(value) {
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    var _region = value.value
+    if (_region > 0) {
+      $.ajax({
+        url: "{% url 'json-listar-comunas' 0 %}".replace('/0', '/' + _region),
+        type: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        success: function (data) {
+          if (data.respuesta) {
+            $('#id-comuna').prop('disabled', false);
+            $('#id-comuna').html('').select({
               data: {
-                  id: null,
-                  text: null
+                id: null,
+                text: null
               }
-          });
-          jQuery.each(data.data, function (index, value) {
-            $('#id-comuna').append($('<option>', { value: value.id, text: value.nombre }));
-          });
+            });
+            jQuery.each(data.data, function (index, value) {
+              $('#id-comuna').append($('<option>', { value: value.id, text: value.nombre }));
+            });
+          }
+        },
+        error: function (data) {
+          console.log('ha ocurrido un error!')
         }
-      },
-      error: function(data){
-        console.log('ha ocurrido un error!')
-      }
-  })
-  }else{
-    $('#id-comuna').prop('disabled', true);
-    $('#id-comuna').append('<option value="-1" hidden selected>Seleccione</option>');
+      })
+    } else {
+      $('#id-comuna').prop('disabled', true);
+      $('#id-comuna').append('<option value="-1" hidden selected>Seleccione</option>');
+    }
   }
-}
 
-function tamanoPantallaUsuario(){
+  function tamanoPantallaUsuario() {
     var value = screen.width
-    if(value>1300){
-      return 65
-    }else if(value < 400){
-      return 35
-    }else{
+    if (value > 1300) {
+      return 90
+    } else if (value < 400) {
+      return 45
+    } else {
       return 45
     }
-}
+  }
 
-const dataGrid = $("#tablaCamaras").dxDataGrid({
+  const dataGrid = $("#tablaCamaras").dxDataGrid({
     dataSource: "{% url 'json-listar-camaras' %}",
     showBorders: true,
     showRowLines: true,
@@ -629,7 +756,7 @@ const dataGrid = $("#tablaCamaras").dxDataGrid({
       enabled: true
     },
     searchPanel: {
-      width: 130,
+      width: 170,
       visible: true,
       highlightCaseSensitive: true
     },
@@ -671,19 +798,19 @@ const dataGrid = $("#tablaCamaras").dxDataGrid({
       dataField: "m3",
       caption: "M³",
       dataType: 'number',
-    },{
+    }, {
       dataField: "neto",
       caption: "Neto",
       dataType: 'number',
       format: 'currency',
-    },{
+    }, {
       dataField: "iva",
       caption: "IVA",
       dataType: 'number',
       format: 'currency',
-    },{
+    }, {
       type: "buttons",
-      caption: "Botones",
+      caption: "Acción",
       fixed: true,
       width: tamanoPantallaUsuario(),
       alignment: "center",
@@ -691,9 +818,45 @@ const dataGrid = $("#tablaCamaras").dxDataGrid({
       showInColumnChooser: false,
       buttons: [{
         hint: "Enviar Cotización",
+        // icon: 'email',
         template: function (container, options) {
-            $('<a/>').addClass('dx-link')
-            .text('Enviar')
+          $('<a/>').addClass('dx-link')
+            .text(' Ficha ')
+            .attr('title', 'Enviar Cotización')
+            .attr('target', '_black')
+            .appendTo(container);
+        },
+        onClick: function (e) {
+          $.ajax({
+            url: "{% url 'pdf_view' 0 %}".replace('/0', '/' + e.row.data.ficha),
+            type: 'GET',
+            xhrFields: {
+              responseType: 'blob'
+            },
+            success: function (data) {
+              console.log(data)
+              if (data.size) {
+                var pdfUrl = window.URL.createObjectURL(data);
+                window.open(pdfUrl);
+              } else {
+                notify = new PNotify({
+                  title: 'Acción no ejecutada',
+                  text: 'Cámara no tiene ficha',
+                  type: 'error',
+                  styling: 'bootstrap3',
+                  delay: 3000
+                });
+              }
+
+            },
+          });
+        },
+      }, {
+        hint: "Enviar Cotización",
+        // icon: 'file',
+        template: function (container, options) {
+          $('<a/>').addClass('dx-link')
+            .text(' Enviar ')
             .attr('title', 'Enviar Cotización')
             .attr('target', '_black')
             .appendTo(container);
@@ -704,46 +867,7 @@ const dataGrid = $("#tablaCamaras").dxDataGrid({
           modal.modal('show')
         },
       }]
-    }], onContentReady: function (e) {
-        var $editar_km = $('<div style="margin-right: 5px">').dxButton({
-            icon: 'car', //or your custom icon
-            hint: "Editar Valor KM",
-            onClick: function () {
-              abrirModalCambiarValorKm();
-            }
-        });
-
-        var $agregar_camara = $('<div style="margin-right: 5px">').dxButton({
-            icon: 'add', //or your custom icon
-            hint: "Agregar Cámara",
-            onClick: function () {
-              abrirModalAgregarCamara();
-            }
-        });
-
-        var $edita_precio = $('<div>').dxButton({
-            icon: 'edit', //or your custom icon
-            hint: "Editar Precio",
-            onClick: function () {
-              abrirModalSubirBajarValor();
-            }
-        });
-
-        if (e.element.find('#edita_precio').length == 0)
-            e.element
-                .find('.dx-toolbar-after')
-                .prepend($edita_precio);
-
-        if (e.element.find('#editar_km').length == 0)
-            e.element
-                .find('.dx-toolbar-after')
-                .prepend($editar_km);
-
-        if (e.element.find('#agregar_camara').length == 0)
-            e.element
-                .find('.dx-toolbar-after')
-                .prepend($agregar_camara);
-    },
-}).dxDataGrid("instance");
+    }]
+  }).dxDataGrid("instance");
 </script>
 {% endblock %}
