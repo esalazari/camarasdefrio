@@ -19,5 +19,5 @@ urlpatterns = [
     path('json-listar-comuna/<int:id>', dx.jsonListarComunas, name='json-listar-comunas'),
     path('json-listar-camaras/', dx.jsonListarCamaras, name='json-listar-camaras'),
     ### VIEW PDF
-    path('<path:url>', views.pdf_view, name='pdf_view'),
+    path('pdf/<path:url>', views.pdf_view, name='pdf_view'),
 ]
