@@ -1,95 +1,78 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-    <title>Cámaras de Frio - {% block titulo %}{% endblock %}</title>   
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Listado de Camaras de Frío">
-    <meta name="author" content="BBEF">
-
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/logo_navbar.png' %}">
-    <link rel="stylesheet" href="{% static 'lib/@fortawesome/fontawesome-free/css/all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/automatica.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/cargando.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/dev-express/css/dx.common.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/dev-express/css/dx.light.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/pnotify/dist/pnotify.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/pnotify/dist/pnotify.buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/pnotify/dist/pnotify.nonblock.css' %}">
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>"https://www.google-analytics.com/analytics.js"</script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=XXXXXXXXXXXXXXXX"></script>
-    {% block js_header %}
-    {% endblock %}
-
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Automática Ingeniería - {% block titulo %} {% endblock %}</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/feather/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/typicons/typicons.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/css/vendor.bundle.base.css' %}">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="{% static 'lib/startadmin/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+  <link rel="stylesheet" href="{% static 'lib/startadmin/js/select.dataTables.min.css' %}">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{% static 'lib/startadmin/css/vertical-layout-light/style.css' %}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{% static 'lib/startadmin/images/favicon.png' %}" />
 </head>
 
-<body id="navbarMenu">
-    <div class="content ht-100v pd-0">
-        {% include 'menu.html' %}
-        <header class="navbar navbar-header navbar-header-fixed">
-            <div class="container">
-                <div class="row mx-auto d-block">
-                    <img src="{% static 'assets/img/banner_2.png' %}" class="img-fluid"
-                        alt="Responsive image">
-                </div>
-            </div>
-        </header><!-- navbar -->
-        
-        <header class="navbar">
-            <div class="container">
-                <div class="row mx-auto">
-                    <div class="d-sm-flex align-items-center justify-content-between">
-                        {% block breadcrumb %}{% endblock %}
-                        {% block menu_botones %}{% endblock %}
-                    </div>
-                    <!-- block container -->
-                    {% block container %}
-                    {% endblock %}
-                    <!-- end block container -->
-                </div>
-            </div>
-        </header>
-    </div><!-- content -->
+<body>
+  <div class="container-scroller">
+    <!-- MENU SUPERIOR -->
+    <!-- partial -->
+    {% include 'navbar.html' %}
+    
+    <div class="container-fluid page-body-wrapper">
+      <!-- PANEL DE CONFIGURACIÓN -->
+      <!-- partial -->
+      {% include 'settings-panel.html' %}
+      
+      <!-- partial -->
+      {% include 'sidebar.html' %}
 
-    <div id="cargandoInformacion" class="modal fade bs-example-modal-sm" tabindex="9999999" role="dialog"
-        aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div style="text-align: center">
-                        <div class="container-cargando">
-                            <div class="div-cargando">
-                              <div class="pelotas"></div>
-                              <div class="pelotas"></div>
-                              <div class="pelotas"></div>
-                              <span class="texto-cargando">Cargando...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% block container %} {% endblock %}
         </div>
+        <!-- partial -->
+        {% include 'footer.html' %}
+      </div>
+      <!-- main-panel ends -->
     </div>
-    <script src="https://kit.fontawesome.com/41ccacd8d2.js" crossorigin="anonymous"></script>
-    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'lib/dev-express/js/jszip.min.js' %}"></script>
-    <script src="{% static 'lib/dev-express/js/dx.all.js' %}"></script>
-    <script src="{% static 'lib/dev-express/js/localization/dx.messages.es.js' %}"></script>
-    <script src="{% static 'lib/parsleyjs/parsley.min.js' %}"></script>
-    <script src="{% static 'lib/parsleyjs/i18n/es.js' %}"></script>
-    <script src="{% static 'assets/js/bbefwebsolutions.js' %}"></script>
-    <script src="{% static 'assets/js/cargando.js' %}"></script>
-    <script src="{% static 'lib/pnotify/dist/pnotify.js' %}"></script>
-    <script src="{% static 'lib/pnotify/dist/pnotify.buttons.js' %}"></script>
-    <script src="{% static 'lib/pnotify/dist/pnotify.nonblock.js' %}"></script>
-    {% block partial_js_script %}{% endblock %}
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="{% static 'lib/startadmin/vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'lib/startadmin/vendors/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'lib/startadmin/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'lib/startadmin/vendors/progressbar.js/progressbar.min.js' %}"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'lib/startadmin/js/off-canvas.js' %}"></script>
+  <script src="{% static 'lib/startadmin/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'lib/startadmin/js/template.js' %}"></script>
+  <script src="{% static 'lib/startadmin/js/settings.js' %}"></script>
+  <script src="{% static 'lib/startadmin/js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="{% static 'lib/startadmin/js/dashboard.js' %}"></script>
+  <script src="{% static 'lib/startadmin/js/Chart.roundedBarCharts.js' %}"></script>
+  <!-- End custom js for this page-->
+  {% block partial_js_script %} {% endblock %}
 </body>
 
 </html>

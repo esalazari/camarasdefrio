@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Listado de Cámaras{% endblock %}
+
+{% block container %}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Cámaras</h4>
+                <p class="card-description">
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Nombre</th>
+                                <th>M2</th>
+                                <th>M3</th>
+                                <th>Neto</th>
+                                <th>IVA</th>
+                                <th>Ficha</th>
+                                <th>Correo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for camara in camaras %}
+                            <tr>
+                                <td>{{camara.correlativo}}</td>
+                                <td>{{camara.nombre}}</td>
+                                <td>{{camara.m2}}</td>
+                                <td>{{camara.m3}}</td>
+                                <td><strong>$</strong>{{camara.valorNeto}}</td>
+                                <td><strong>$</strong>{{camara.valorIva}}</td>
+                                <!-- <td onclick="mostrar_ficha_camara('{{camara.ficha}}')"><label class="badge badge-danger">Ficha</label></td> -->
+                                <td><a onclick="mostrar_ficha_camara('{{camara.ficha}}')"
+                                        style="text-decoration: underline; color: blue; cursor: pointer;">Ficha</a></td>
+                                <td><a onclick="enviar_cotizacion('{{camara.id}}')"
+                                        style="text-decoration: underline; color: blue; cursor: pointer;">Enviar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal enviar cotización -->
+<div class="modal fade" id="modalEnviarCorreo" tabindex="-1" aria-labelledby="modalEnviarCorreoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEnviarCorreoLabel">Enviar Cotización</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEnviarCorreoCliente" method="POST" action="{% url 'envio-correo-cliente' %}"
+                    data-parsley-validate>
+                    {% csrf_token%}
+                    <input type="hidden" id="numero-camara" name="numero-camara">
+
+                    <div class="form-group">
+                        <label>Correo Electrónico <span class="tx-danger">*</span></label>
+                        <input type="mail" class="form-control form-control-sm" id='id-correo-cliente'
+                            name='correo-cliente' placeholder="Correo Electrónico" aria-label="Username" required>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="id-check-datos-cliente"
+                                        name="check-datos-cliente" onchange="mostrarFormularioCliente()">
+                                    Cliente
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="id-check-datos-observacion"
+                                        name="check-datos-observacion" onchange="mostrarFormularioObservacion()">
+                                    Observación
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="id-check-datos-descuento"
+                                        name="check-datos-descuento" onchange="mostrarFormularioDescuento()">
+                                    Descuento
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-formulario-cliente" id="id-container-formulario-cliente" hidden>
+                        <div class="form-group">
+                            <label for="id-nombre">Nombre <span class="tx-danger">*</span></label>
+                            <input type="mail" class="form-control form-control-sm" id='id-nombre' name='nombre'
+                                placeholder="Nombre" aria-label="Nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-rut">Rut<span class="tx-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id='id-rut' name='rut'
+                                placeholder="Rut" aria-label="Rut" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-giro">Giro Comercial<span class="tx-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id='id-giro' name='giro'
+                                placeholder="Giro Comercial" aria-label="Giro" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Región</label>
+                            <select class="js-example-basic-single w-100 form-control form-control-sm" id="id-region"
+                                name="region" onchange="buscarComunas(this)">
+                                <option value="-1" selected>Seleccionar</option>
+                                {% for region in regiones %}
+                                <option value="{{region.id}}">{{region.nombre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Comuna</label>
+                            <select class="js-example-basic-single w-100 form-control form-control-sm" id="id-comuna"
+                                name="comuna" disabled required">
+                                <option value="-1" selected>Seleccionar</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="id-check-datos-cliente"
+                                name="check-datos-cliente" onchange="mostrarFormularioCliente()">
+                            <label class="form-check-label" for="id-check-datos-cliente">Cliente</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="id-check-datos-observacion"
+                                name="check-datos-observacion" onchange="mostrarFormularioObservacion()">
+                            <label class="form-check-label" for="id-check-datos-observacion">Observación</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="id-check-datos-descuento"
+                                name="check-datos-descuento" onchange="mostrarFormularioDescuento()">
+                            <label class="form-check-label" for="id-check-datos-descuento">Descuento</label>
+                        </div>
+                    </div> -->
+
+                    <div class="container-formulario-cliente" id="id-container-formulario-cliente" hidden>
+                        <div class="form-group row">
+                            <label for="id-nombre" class="col-sm-3 col-form-label">Nombre<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id='id-nombre' name='nombre'>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-rut" class="col-sm-3 col-form-label">Rut<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id='id-rut' name='rut'>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-giro" class="col-sm-3 col-form-label">Giro Comercial<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id='id-giro' name='giro'>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-region" class="col-sm-3 col-form-label">Región<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9 mg-0 pd-0">
+                                <select class="form-select" id="id-region" name="region" onchange="buscarComunas(this)"
+                                    required>
+                                    <option value="-1" selected>Seleccionar</option>
+                                    {% for region in regiones %}
+                                    <option value="{{region.id}}">{{region.nombre}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-comuna" class="col-sm-3 col-form-label">Comuna<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9 mg-0 pd-0">
+                                <select class="form-select" id="id-comuna" name="comuna" disabled required>
+                                    <option value="-1" selected>Seleccionar</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-direccion" class="col-sm-3 col-form-label">Dirección<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id='id-direccion' name='direccion'>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id-telefono" class="col-sm-3 col-form-label">Telefono<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id='id-telefono' name='telefono'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-formulario-observacion" id="id-container-formulario-observacion" hidden>
+                        <div class="form-group row">
+                            <label for="id-observacion" class="col-sm-3 col-form-label">Observación</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="id-observacion" name="observacion"
+                                    rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-formulario-descuento" id="id-container-formulario-descuento" hidden>
+                        <div class="form-group row">
+                            <label for="id-rut" class="col-sm-3 col-form-label">Descuento<span
+                                    class="tx-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id='id-descuento' name='descuento'
+                                    placeholder="%">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group row">
+                        <label for="id-correo-cliente" class="col-sm-3 col-form-label">Correo Electronico<span
+                                class="tx-danger">*</span></label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id='id-correo-cliente' name='correo-cliente'
+                                required>
+                        </div>
+                    </div> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                        class="fa-regular fa-circle-xmark"></i> Cerrar</button>
+                <button class="btn btn-primary" id="btn_enviando_correo" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Enviando...
+                </button>
+                <button type="button" class="btn btn-primary" id="btn_enviar_correo"><i
+                        class="fa-solid fa-envelope"></i> Enviar
+                    Cotización</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block partial_js_script %}
+<script>
+    $("#btn_enviando_correo").hide()
+
+    function mostrarFormularioCliente() {
+        var checkBox_cliente = document.getElementById("id-check-datos-cliente");
+        // If the checkbox is checked, display the output text
+        if (checkBox_cliente.checked == true) {
+            $("#id-container-formulario-cliente").attr('hidden', false)
+            $("#id-nombre").attr('required', true)
+            $("#id-rut").attr('required', true)
+            $("#id-direccion").attr('required', true)
+            $("#id-telefono").attr('required', true)
+            $("#id-giro").attr('required', true)
+            $("#id-comuna").attr('required', true)
+            $("#id-region").attr('required', true)
+        } else {
+            $("#id-container-formulario-cliente").attr('hidden', true)
+            $("#id-nombre").attr('required', false)
+            $("#id-rut").attr('required', false)
+            $("#id-direccion").attr('required', false)
+            $("#id-telefono").attr('required', false)
+            $("#id-giro").attr('required', false)
+            $("#id-comuna").attr('required', false)
+            $("#id-region").attr('required', false)
+        }
+    }
+
+    function mostrarFormularioObservacion() {
+        var checkBox_observacion = document.getElementById("id-check-datos-observacion");
+        // If the checkbox is checked, display the output text
+        if (checkBox_observacion.checked == true) {
+            $("#id-container-formulario-observacion").attr('hidden', false)
+            $("#id-observacion").attr('required', true)
+        } else {
+            $("#id-container-formulario-observacion").attr('hidden', true)
+            $("#id-observacion").attr('required', false)
+        }
+    }
+
+    function mostrarFormularioDescuento() {
+        var checkBox_descuento = document.getElementById("id-check-datos-descuento");
+        // If the checkbox is checked, display the output text
+        if (checkBox_descuento.checked == true) {
+            $("#id-container-formulario-descuento").attr('hidden', false)
+            $("#id-descuento").attr('required', true)
+        } else {
+            $("#id-container-formulario-descuento").attr('hidden', true)
+            $("#id-descuento").attr('required', false)
+        }
+    }
+
+    function mostrar_ficha_camara(value) {
+        $.ajax({
+            url: "{% url 'pdf_view' 0 %}".replace('/0', '/' + value),
+            type: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data) {
+                var pdfUrl = window.URL.createObjectURL(data);
+                window.open(pdfUrl);
+            },
+            error: function () {
+                notify = new PNotify({
+                    title: 'Acción no ejecutada',
+                    text: 'Cámara no tiene ficha',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                    delay: 3000
+                });
+            }
+        });
+    };
+
+    function enviar_cotizacion(value) {
+        let modal = $('#modalEnviarCorreo')
+        $("#numero-camara").val(value.id)
+        modal.modal('show')
+    }
+
+
+    function buscarComunas(value) {
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        var _region = value.value
+        if (_region > 0) {
+            $.ajax({
+                url: "{% url 'json-listar-comunas' 0 %}".replace('/0', '/' + _region),
+                type: "POST",
+                headers: { "X-CSRFToken": csrftoken },
+                success: function (data) {
+                    if (data.respuesta) {
+                        $('#id-comuna').prop('disabled', false);
+                        $('#id-comuna').html('').select({
+                            data: {
+                                id: null,
+                                text: null
+                            }
+                        });
+                        jQuery.each(data.data, function (index, value) {
+                            $('#id-comuna').append($('<option>', { value: value.id, text: value.nombre }));
+                        });
+                    }
+                },
+                error: function (data) {
+                    console.log('ha ocurrido un error!')
+                }
+            })
+        } else {
+            $('#id-comuna').prop('disabled', true);
+            $('#id-comuna').append('<option value="-1" hidden selected>Seleccione</option>');
+        }
+    }
+</script>
+{% endblock %}

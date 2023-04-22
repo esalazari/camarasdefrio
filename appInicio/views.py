@@ -57,7 +57,7 @@ def inicio(request):
         'comunas': _comunas,
         'valor_km': str(round(_valor_x_km.valor, 0)).replace(',', '.')
     }
-    return render(request, "inicio.html", context=_context)
+    return render(request, "dashboard.html", context=_context)
 
 
 def pdf_view(request, url):
