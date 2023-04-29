@@ -1,5 +1,6 @@
 from django.db import models
 from appCliente.models import Cliente
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -67,6 +68,7 @@ class Cotizacion(models.Model):
     neto = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Valor Neto')
     iva = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Valor IVA')
     total = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Valor Total')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, default = None, verbose_name='Autor')
     ### Datos de Log ###
     registroActivo = models.BooleanField( default = True, verbose_name = 'Registro Activo' )
     registroFechaCreacion = models.DateTimeField( null=False, blank=False, auto_now_add=True, verbose_name = 'Fecha de Creación')

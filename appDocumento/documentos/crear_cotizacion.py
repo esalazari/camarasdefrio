@@ -13,7 +13,7 @@ pdfmetrics.registerFont(TTFont('VeraBd', 'VeraBd.ttf'))
 pdfmetrics.registerFont(TTFont('VeraIt', 'VeraIt.ttf'))
 pdfmetrics.registerFont(TTFont('VeraBI', 'VeraBI.ttf'))
 
-def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, cliente=None):
+def crearCotizacion(request, camara=None, correo=None, observacion=None, descuento=None, cliente=None):
     _nombre_cliente = cliente.nombre.upper() if cliente else ''
     _rut_cliente = cliente.rut if cliente else ''
     _giro_cliente = cliente.giro.upper() if cliente else ''
@@ -52,7 +52,7 @@ def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, 
     _total = _total_neto + _valorIva
 
     _correlativo = correlativoCotizacion();
-    _cotizacion = Cotizacion.objects.create(observacion=observacion, correlativo=int(_correlativo), tipo_id=1, cliente=cliente, camara=camara, descuento=descuento, subNeto=_total_sub_neto, neto=_total_neto, iva=_valorIva, total=_total)
+    _cotizacion = Cotizacion.objects.create(observacion=observacion, correlativo=int(_correlativo), tipo_id=1, cliente=cliente, camara=camara, descuento=descuento, subNeto=_total_sub_neto, neto=_total_neto, iva=_valorIva, total=_total, autor=request.user)
     
 
     w, h = letter

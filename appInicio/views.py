@@ -23,11 +23,11 @@ from appInicio.models import Region, Provincia, Comuna
 from appDocumento.documentos.crear_cotizacion import crearCotizacion
 from appDocumento.correos.envio_correo_cotizacion import enviarCorreoCotizacion
 from appCliente.models import Cliente
-from appUsuario.user_decorator import validarPermisosEcosapp
+from appUsuario.user_decorator import validarPermisosAutomatica
 
 
 # Create your views here.
-@validarPermisosEcosapp()
+@validarPermisosAutomatica()
 def inicio(request):
     _data = []
     _camaras = Camara.objects.filter(registroActivo=True)
@@ -59,14 +59,15 @@ def inicio(request):
     }
     return render(request, "inicio.html", context=_context)
 
-
+@validarPermisosAutomatica()
 def pdf_view(request, url):
     file_path = os.path.join(settings.MEDIA_ROOT, url)
     with open(file_path, 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="{os.path.basename(file_path)}"'
         return response
-        
+
+@validarPermisosAutomatica()
 def enviarCorreoCliente(request):
     _enviado = None
     _respuesta = 0
@@ -87,7 +88,7 @@ def enviarCorreoCliente(request):
             _descuento = request.POST.get('descuento')
 
         if _checkbox is None: # Cuando solo se debe enviar correo sin datos de cliente
-            _enviado = enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento)
+            _enviado = enviarCorreoCotizacion(request, _correo, _camara, _observacion, _descuento)
             _respuesta = 1
         else:
             _nombre = request.POST.get('nombre')
@@ -112,10 +113,11 @@ def enviarCorreoCliente(request):
                 _cliente = Cliente.objects.create(nombre=_nombre, rut=_rut, giro=_giro, region=_region, comuna=_comuna, direccion=_direccion, telefono=_telefono, correo=_correo)
                 _respuesta = 3  
             _nombre_cliente = _cliente.nombre
-            _enviado = enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente)
+            _enviado = enviarCorreoCotizacion(request, _correo, _camara, _observacion, _descuento, _cliente)
     json = { 'respuesta': _respuesta, 'cliente': _nombre_cliente, 'enviado': _enviado }
     return JsonResponse(json, safe=False)
 
+@validarPermisosAutomatica()
 def guardarCamaraFrio(request):
     _respuesta = False
     if request.method == 'POST':
@@ -133,6 +135,7 @@ def guardarCamaraFrio(request):
     json = { 'respuesta': _respuesta }
     return JsonResponse(json, safe=False)
 
+@validarPermisosAutomatica()
 def cambiarValorKm(request):
     _respuesta = False
     if request.method == 'POST':
@@ -145,6 +148,7 @@ def cambiarValorKm(request):
     json = { 'respuesta': _respuesta, 'valor': _valor }
     return JsonResponse(json, safe=False)
 
+@validarPermisosAutomatica()
 def cambiarPrecioCamara(request):
     _respuesta = False
     _camaras = Camara.objects.filter(registroActivo=True)
@@ -175,6 +179,7 @@ def cambiarPrecioCamara(request):
 
 
 #FUNCIONES PARA CARGAR CONTACTOS
+@validarPermisosAutomatica()
 def cargarMasivaCamaras(request):
     _post = False
     _respuesta = True
@@ -232,6 +237,7 @@ def cargarMasivaCamaras(request):
     }
     return render(request, "cargar_camaras.html", context=_context)
 
+@validarPermisosAutomatica()
 def guardarFichaCamara(request):
     _respuesta = False
     print('funcion ficha')

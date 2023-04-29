@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 
-def validarPermisosEcosapp(primerLogin=False, contratoConfidencialidad=False, permisos=[]):
+def validarPermisosAutomatica(primerLogin=False, contratoConfidencialidad=False, permisos=[]):
     """
     función que se opera como decorador sobre los views para validar las reglas de ejecución de las funciones view.
     reglas implementadas:\n

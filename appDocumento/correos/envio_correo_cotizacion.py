@@ -15,7 +15,7 @@ remplazar_tildes = (
         ("ú", "u"),
     )
 
-def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=None):
+def enviarCorreoCotizacion(request, _correo, _camara, _observacion, _descuento, _cliente=None):
     _respuesta = False
     # try:
     # Iniciamos los parámetros del script
@@ -41,7 +41,7 @@ def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=
     nombre_ficha = str(_nombre_camara)+'.pdf'
 
     # Crear cotización y buscar en la ruta del archivo creado
-    crearCotizacion(_camara, _correo, _observacion, _descuento, _cliente);
+    crearCotizacion(request, _camara, _correo, _observacion, _descuento, _cliente);
     ruta_cotizacion = (r'media/cotizaciones/Cotizacion_camara.pdf')
     nombre_cotizacion = 'Cotizacion_de_camara.pdf'
 
