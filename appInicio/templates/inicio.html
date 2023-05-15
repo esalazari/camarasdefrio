@@ -446,7 +446,17 @@
   }
 
   function abrirModalEnviarCorreo(value) {
-    $("#numero-camara").val(value)
+    _valores = []
+    if(value.length>1){
+      value.forEach(function(item) {
+        _valores.push(item.id)
+      });
+    }else{
+      _valores.push(value)
+    }
+    let modal = $('#modalEnviarCorreo')
+    $("#numero-camara").val(_valores)
+    modal.modal('show')
   }
 
   function abrirModalAgregarCamara() {
@@ -747,6 +757,9 @@
     rowAlternationEnabled: true,
     hoverStateEnabled: true,
     columnAutoWidth: true,
+    selection: {
+      mode: 'multiple',
+    },
     scrolling: {
       columnRenderingMode: 'virtual',
     },
@@ -807,76 +820,79 @@
       dataType: 'number',
       format: 'currency',
     }, {
-      type: "buttons",
-      caption: "Acción",
-      fixed: true,
-      width: tamanoPantallaUsuario(),
+      dataField: '',
+      caption: '',
       alignment: "center",
-      allowHiding: false,
-      showInColumnChooser: false,
-      buttons: [{
-        hint: "Enviar Cotización",
-        // icon: 'email',
-        template: function (container, options) {
-          $('<a/>').addClass('dx-link')
-            .text(' Ficha ')
-            .attr('title', 'Enviar Cotización')
-            .attr('target', '_black')
-            .appendTo(container);
-        },
-        onClick: function (e) {
-          if (e.row.data.ficha) {
-            $.ajax({
-              url: "{% url 'pdf_view' 0 %}".replace('/0', '/' + e.row.data.ficha),
-              type: 'GET',
-              xhrFields: {
-                responseType: 'blob'
-              },
-              success: function (data) {
-                console.log(data)
-                if (data.size) {
-                  var pdfUrl = window.URL.createObjectURL(data);
-                  window.open(pdfUrl);
-                } else {
-                  notify = new PNotify({
-                    title: 'Acción no ejecutada',
-                    text: 'Cámara no tiene ficha',
-                    type: 'error',
-                    styling: 'bootstrap3',
-                    delay: 3000
-                  });
-                }
-
-              },
-            });
+      cellTemplate: function (container, options) {
+        $('<a/>').addClass('dx-link')
+          .text('Ficha')
+          .attr('href', "{% url 'pdf_view' 0 %}".replace('/0', '/' + options.key.ficha))
+          .attr('title', 'Ficha')
+          .attr('target', '_black')
+          .appendTo(container);
+      },
+      allowHiding: true,
+      showInColumnChooser: false
+    }, {
+      dataField: '',
+      caption: '',
+      alignment: "center",
+      cellTemplate: function (container, options) {
+        $('<a/>').addClass('dx-link')
+          .text('Enviar')
+          .attr('title', 'Cotización')
+          .attr('target', '_black')
+          .appendTo(container)
+          .off('click')
+          .on('click', function () {
+            abrirModalEnviarCorreo(options.key.id);
+          });
+      },
+      allowHiding: true,
+      showInColumnChooser: false
+    }], onContentReady: function (e) {
+      var $envios_multiples_camaras = $('<div class="mr-2" id="envios_multiples_camaras">').dxButton({
+        icon: 'movetofolder', //or your custom icon
+        hint: "Enviar Correo",
+        onClick: function () {
+          var dataGrid = $("#tablaCamaras").dxDataGrid("instance");
+          var seleccionados = dataGrid.getSelectedRowsData();
+          if (seleccionados.length > 0) {
+            abrirModalEnviarCorreo(seleccionados)
           }else{
             notify = new PNotify({
-              title: 'Acción no ejecutada',
-              text: 'Cámara no tiene ficha',
-              type: 'error',
-              styling: 'bootstrap3',
-              delay: 3000
+                title: 'Acción sin exito',
+                text: 'No ha seleccionado ningúna cámara',
+                type: 'error',
+                styling: 'bootstrap3',
+                delay: 2000
             });
           }
 
-        },
-      }, {
-        hint: "Enviar Cotización",
-        // icon: 'file',
-        template: function (container, options) {
-          $('<a/>').addClass('dx-link')
-            .text(' Enviar ')
-            .attr('title', 'Enviar Cotización')
-            .attr('target', '_black')
-            .appendTo(container);
-        },
-        onClick: function (e) {
-          let modal = $('#modalEnviarCorreo')
-          $("#numero-camara").val(e.row.data.id)
-          modal.modal('show')
-        },
-      }]
-    }]
+        }
+      });
+      if (e.element.find('#envios_multiples_camaras').length == 0)
+        e.element
+          .find('.dx-toolbar-after')
+          .prepend($envios_multiples_camaras);
+    },
   }).dxDataGrid("instance");
+
+  $('#select-all-mode').dxSelectBox({
+    dataSource: ['allPages', 'page'],
+    value: 'allPages',
+    onValueChanged(data) {
+      dataGrid.option('selection.selectAllMode', data.value);
+    },
+  });
+
+  $('#show-checkboxes-mode').dxSelectBox({
+    dataSource: ['none', 'onClick', 'onLongTap', 'always'],
+    value: dataGrid.option('selection.showCheckBoxesMode'),
+    onValueChanged(data) {
+      dataGrid.option('selection.showCheckBoxesMode', data.value);
+      $('#select-all-mode').dxSelectBox('instance').option('disabled', data.value === 'none');
+    },
+  });
 </script>
 {% endblock %}
