@@ -783,9 +783,9 @@ th {
     width: 25px !important;
   }
   
-  #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(2){
+  /* #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(2){
     width: 25px !important;
-  }
+  } */
   
   #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(1){
     width: 25px !important;
