@@ -41,7 +41,12 @@
     {% endfor %}
   </tbody>
 </table> -->
-<div id="tablaCamaras"></div>
+<div class="demo-container">
+  <div id="grid">
+    <div id="tablaCamaras"></div>
+  </div>
+</div>
+
 <br><br><br>
 
 <!-- Modal -->
@@ -799,8 +804,7 @@
     }, {
       dataField: "nombre",
       caption: "Nombre",
-      allowHiding: false,
-      showInColumnChooser: false,
+      
     }, {
       dataField: "m2",
       caption: "M²",
@@ -877,22 +881,5 @@
           .prepend($envios_multiples_camaras);
     },
   }).dxDataGrid("instance");
-
-  $('#select-all-mode').dxSelectBox({
-    dataSource: ['allPages', 'page'],
-    value: 'allPages',
-    onValueChanged(data) {
-      dataGrid.option('selection.selectAllMode', data.value);
-    },
-  });
-
-  $('#show-checkboxes-mode').dxSelectBox({
-    dataSource: ['none', 'onClick', 'onLongTap', 'always'],
-    value: dataGrid.option('selection.showCheckBoxesMode'),
-    onValueChanged(data) {
-      dataGrid.option('selection.showCheckBoxesMode', data.value);
-      $('#select-all-mode').dxSelectBox('instance').option('disabled', data.value === 'none');
-    },
-  });
 </script>
 {% endblock %}
