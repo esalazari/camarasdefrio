@@ -778,3 +778,30 @@ th {
         font-size: 2vw;
     }
   }
+
+  #tablaCamaras > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div > table > colgroup > col:nth-child(1){
+    width: 25px !important;
+  }
+  
+  #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(2){
+    width: 25px !important;
+  }
+  
+  #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(1){
+    width: 25px !important;
+  }
+  
+  #tablaCamaras > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div > table > tbody > tr > td.dx-command-select.dx-cell-focus-disabled.dx-editor-cell.dx-editor-inline-block > div > div > span{
+    width: 9px !important;
+    height: 9px !important;
+  }
+  
+  #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > tbody > tr > td.dx-command-select.dx-editor-cell.dx-editor-inline-block.dx-cell-focus-disabled > div > div > span {
+    width: 9px !important;
+    height: 9px !important;
+  }
+  
+  #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > tbody > tr > td.dx-command-select.dx-editor-cell.dx-editor-inline-block > div > div > span{
+    width: 9px !important;
+    height: 9px !important;
+  }
