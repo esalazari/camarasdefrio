@@ -61,7 +61,7 @@ class Cotizacion(models.Model):
     tipo = models.ForeignKey(TipoPago, on_delete=models.CASCADE, null=True, blank=True, default=True, verbose_name='Condición de Pago')
     correlativo = models.IntegerField(default=None, null=True, blank=True, verbose_name="Correlativo")
     cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE, null = True, blank = True, max_length=100, default = None, verbose_name = 'Cliente')
-    camara = models.ForeignKey(Camara, on_delete = models.CASCADE, null = True, blank = True, max_length=100, default = None, verbose_name = 'Camara')
+    camara = models.ManyToManyField(Camara, blank=True, verbose_name='Cámaras')
     descuento = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Descuento')
     subNeto = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Valor SubNeto')
     neto = models.DecimalField(max_digits=20, decimal_places=2, null = True, blank = True, default = None, verbose_name = 'Valor Neto')

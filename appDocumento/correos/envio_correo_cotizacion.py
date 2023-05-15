@@ -15,7 +15,7 @@ remplazar_tildes = (
         ("ú", "u"),
     )
 
-def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=None):
+def enviarCorreoCotizacion(_correo, _camaras, _observacion, _descuento, _cliente=None):
     _respuesta = False
     # try:
     # Iniciamos los parámetros del script
@@ -26,22 +26,14 @@ def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=
 
     # Armar correo con html
     _context = {
-        'camara': _camara,
+        'camaras': _camaras,
         'correo': _correo,
         'cliente': _cliente,
     }
     cuerpo = render_to_string('email/email_cotizacion.html', context = _context)
 
-    _nombre_camara = _camara.nombre.replace(' ','_').replace('.', '').replace(',', '')
-    for a, b in remplazar_tildes:
-        _nombre_camara = _nombre_camara.replace(a, b).replace(a.upper(), b.upper())
-
-    # Buscar archivo correspondiente a la camara seleccionada
-    ruta_ficha = (r'media/'+str(_camara.ficha))
-    nombre_ficha = str(_nombre_camara)+'.pdf'
-
     # Crear cotización y buscar en la ruta del archivo creado
-    crearCotizacion(_camara, _correo, _observacion, _descuento, _cliente);
+    crearCotizacion(_camaras, _correo, _observacion, _descuento, _cliente);
     ruta_cotizacion = (r'media/cotizaciones/Cotizacion_camara.pdf')
     nombre_cotizacion = 'Cotizacion_de_camara.pdf'
 
@@ -55,15 +47,6 @@ def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=
     
     # Agregamos el cuerpo del mensaje como objeto MIME de tipo texto
     mensaje.attach(MIMEText(cuerpo, 'html'))
-    
-    # Abrimos el archivo que vamos a adjuntar
-    ficha_adjunto = open(ruta_ficha, 'rb')
-    adjunto_primero = MIMEBase('application', 'octet-stream')
-    adjunto_primero.set_payload((ficha_adjunto).read())
-    encoders.encode_base64(adjunto_primero)
-    adjunto_primero.add_header('Content-Disposition', "attachment; filename= %s" % nombre_ficha)
-    mensaje.attach(adjunto_primero)
-    ficha_adjunto.close()
 
     # Abrimos cotización que vamos a adjuntar
     cotizacion_adjunto = open(ruta_cotizacion, 'rb')
@@ -73,6 +56,23 @@ def enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente=
     adjunto_segundo.add_header('Content-Disposition', "attachment; filename= %s" % nombre_cotizacion)
     mensaje.attach(adjunto_segundo)
     cotizacion_adjunto.close()
+
+    for _camara in _camaras:
+        _nombre_camara = _camara.nombre.replace(' ','_').replace('.', '').replace(',', '')
+        for a, b in remplazar_tildes:
+            _nombre_camara = _nombre_camara.replace(a, b).replace(a.upper(), b.upper())
+
+        # Buscar archivo correspondiente a la camara seleccionada
+        ruta_ficha = (r'media/'+str(_camara.ficha))
+        nombre_ficha = str(_nombre_camara)+'.pdf'
+        # Abrimos el archivo que vamos a adjuntar
+        ficha_adjunto = open(ruta_ficha, 'rb')
+        adjunto_primero = MIMEBase('application', 'octet-stream')
+        adjunto_primero.set_payload((ficha_adjunto).read())
+        encoders.encode_base64(adjunto_primero)
+        adjunto_primero.add_header('Content-Disposition', "attachment; filename= %s" % nombre_ficha)
+        mensaje.attach(adjunto_primero)
+        ficha_adjunto.close()
     
     # Creamos la conexión con el servidor
     sesion_smtp = smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int))

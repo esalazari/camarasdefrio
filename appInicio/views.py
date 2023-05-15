@@ -23,11 +23,11 @@ from appInicio.models import Region, Provincia, Comuna
 from appDocumento.documentos.crear_cotizacion import crearCotizacion
 from appDocumento.correos.envio_correo_cotizacion import enviarCorreoCotizacion
 from appCliente.models import Cliente
-from appUsuario.user_decorator import validarPermisosEcosapp
+from appUsuario.user_decorator import validarPermisosAutomatica
 
 
 # Create your views here.
-@validarPermisosEcosapp()
+@validarPermisosAutomatica()
 def inicio(request):
     _data = []
     _camaras = Camara.objects.filter(registroActivo=True)
@@ -75,7 +75,8 @@ def enviarCorreoCliente(request):
     _descuento = 0
     if request.method == 'POST':
         _correo = request.POST.get('correo-cliente')
-        _camara = Camara.objects.get(id=int(request.POST.get('numero-camara')))
+        _selecionados = request.POST.get('numero-camara').split(',')
+        _camaras = Camara.objects.filter(id__in=_selecionados)
         _checkbox = request.POST.get('check-datos-cliente')
         _check_observacion = request.POST.get('check-datos-observacion')
         _check_descuento = request.POST.get('check-datos-descuento')
@@ -87,7 +88,7 @@ def enviarCorreoCliente(request):
             _descuento = request.POST.get('descuento')
 
         if _checkbox is None: # Cuando solo se debe enviar correo sin datos de cliente
-            _enviado = enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento)
+            _enviado = enviarCorreoCotizacion(_correo, _camaras, _observacion, _descuento)
             _respuesta = 1
         else:
             _nombre = request.POST.get('nombre')
@@ -112,7 +113,7 @@ def enviarCorreoCliente(request):
                 _cliente = Cliente.objects.create(nombre=_nombre, rut=_rut, giro=_giro, region=_region, comuna=_comuna, direccion=_direccion, telefono=_telefono, correo=_correo)
                 _respuesta = 3  
             _nombre_cliente = _cliente.nombre
-            _enviado = enviarCorreoCotizacion(_correo, _camara, _observacion, _descuento, _cliente)
+            _enviado = enviarCorreoCotizacion(_correo, _camaras, _observacion, _descuento, _cliente)
     json = { 'respuesta': _respuesta, 'cliente': _nombre_cliente, 'enviado': _enviado }
     return JsonResponse(json, safe=False)
 

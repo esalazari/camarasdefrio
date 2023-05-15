@@ -13,7 +13,7 @@ pdfmetrics.registerFont(TTFont('VeraBd', 'VeraBd.ttf'))
 pdfmetrics.registerFont(TTFont('VeraIt', 'VeraIt.ttf'))
 pdfmetrics.registerFont(TTFont('VeraBI', 'VeraBI.ttf'))
 
-def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, cliente=None):
+def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None, cliente=None):
     _nombre_cliente = cliente.nombre.upper() if cliente else ''
     _rut_cliente = cliente.rut if cliente else ''
     _giro_cliente = cliente.giro.upper() if cliente else ''
@@ -26,12 +26,14 @@ def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, 
     _total_neto = 0
     _valor_descuento = 0
     _total = 0
+    _valor_intalacion = 0
 
     # VALOR INICIAL
-    _total_sub_neto += camara.valorNeto
-    _valor_intalacion = Decimal(camara.valorNeto * Decimal(0.15))
-    _total_sub_neto += _valor_intalacion
+    for camara in camaras:
+        _total_sub_neto += camara.valorNeto
+        _valor_intalacion += Decimal(camara.valorNeto * Decimal(0.15))
 
+    _total_sub_neto += _valor_intalacion
     # CALCULAR VALOR POR KM
     if cliente and cliente.region.codigo_iso != 'CL-RM':
         _valor_km = Decimal(cliente.region.km * _valor_x_km.valor)
@@ -52,7 +54,11 @@ def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, 
     _total = _total_neto + _valorIva
 
     _correlativo = correlativoCotizacion();
-    _cotizacion = Cotizacion.objects.create(observacion=observacion, correlativo=int(_correlativo), tipo_id=1, cliente=cliente, camara=camara, descuento=descuento, subNeto=_total_sub_neto, neto=_total_neto, iva=_valorIva, total=_total)
+    _cotizacion = Cotizacion.objects.create(observacion=observacion, correlativo=int(_correlativo), tipo_id=1, cliente=cliente, descuento=descuento, subNeto=_total_sub_neto, neto=_total_neto, iva=_valorIva, total=_total)
+    for camara in camaras:
+        _cotizacion.camara.add(camara)
+        _cotizacion.save()
+
     
 
     w, h = letter
@@ -299,46 +305,48 @@ def crearCotizacion(camara=None, correo=None, observacion=None, descuento=None, 
 
     # DATO DE CAMARA
     # descrpción de la camara
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawString(103, h-295, str(camara.nombre))
+    _height = 295
+    for camara in camaras:
+        c.setFillColor('black')
+        c.setFont('Vera', 6)
+        c.drawString(103, h-+_height, str(camara.nombre))
 
-    # cantidad de la camara
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(345, h-295, '1')
+        # cantidad de la camara
+        c.setFillColor('black')
+        c.setFont('Vera', 6)
+        c.drawRightString(345, h-_height, '1')
 
-    # precio unitario de la camara
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(425, h-295, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
+        # precio unitario de la camara
+        c.setFillColor('black')
+        c.setFont('Vera', 6)
+        c.drawRightString(425, h-_height, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
 
-    # precio valor de la camara
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(580, h-295, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
+        # precio valor de la camara
+        c.setFillColor('black')
+        c.setFont('Vera', 6)
+        c.drawRightString(580, h-_height, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
+        _height += 10
 
     # descrpción de la intalación
     c.setFillColor('black')
     c.setFont('Vera', 6)
-    c.drawString(103, h-305, 'Intalación')
+    c.drawString(103, h-+_height, 'Intalación')
 
     # cantidad de la intalación
     c.setFillColor('black')
     c.setFont('Vera', 6)
-    c.drawRightString(345, h-305, '1')
+    c.drawRightString(345, h-+_height, '1')
 
     # precio unitario de la intalación
     c.setFillColor('black')
     c.setFont('Vera', 6)
-    c.drawRightString(425, h-305, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
+    c.drawRightString(425, h-+_height, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
 
     # precio valor de la intalación
     c.setFillColor('black')
     c.setFont('Vera', 6)
-    c.drawRightString(580, h-305, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
+    c.drawRightString(580, h-+_height, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
 
-    _height = 305
     if cliente and cliente.region.codigo_iso != 'CL-RM':
         _height += 10
         # DATO DE INTALACIOÓN
