@@ -725,83 +725,26 @@ th {
     padding: 0 !important;
     margin: 0 !important;
   }
-  @media only screen and (max-width: 1000px) {
-    td {
-        font-size: 1vw;
-    }
-
-    th {
-        font-size: 1vw;
-    }
-  }
-
-  @media only screen and (max-width: 800px) {
-    td {
-        font-size: 1.1vw;
-    }
-
-    th {
-        font-size: 1.1vw;
-    }
-  }
-
-  @media only screen and (max-width: 600px) {
-    #id-check-control {
-      transform: scale(0.6);
-    }
-
-    td {
-    font-size: 1.2vw;
-    }
-
-    th {
-      font-size: 1.2vw;
-    }
-  }
-
-  @media only screen and (max-width: 400px) {
-    td {
-        font-size: 1.8vw;
-    }
-
-    th {
-        font-size: 1.8vw;
-    }
-  }
-
-  @media only screen and (max-width: 200px) {
-    td {
-        font-size: 2vw;
-    }
-
-    th {
-        font-size: 2vw;
-    }
-  }
 
   #tablaCamaras > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div > table > colgroup > col:nth-child(1){
-    width: 20px !important;
+    width: 25px !important;
   }
   
-  /* #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(2){
-    width: 25px !important;
-  } */
-  
   #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > colgroup > col:nth-child(1){
-    width: 20px !important;
+    width: 25px !important;
   }
   
   #tablaCamaras > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div > table > tbody > tr > td.dx-command-select.dx-cell-focus-disabled.dx-editor-cell.dx-editor-inline-block > div > div > span{
-    width: 10px !important;
-    height: 10px !important;
+    width: 11px !important;
+    height: 11px !important;
   }
   
   #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > tbody > tr > td.dx-command-select.dx-editor-cell.dx-editor-inline-block.dx-cell-focus-disabled > div > div > span {
-    width: 10px !important;
-    height: 10px !important;
+    width: 11px !important;
+    height: 11px !important;
   }
   
   #tablaCamaras > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-last-row-border.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > tbody > tr > td.dx-command-select.dx-editor-cell.dx-editor-inline-block > div > div > span{
-    width: 10px !important;
-    height: 10px !important;
+    width: 11px !important;
+    height: 11px !important;
   }
