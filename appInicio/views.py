@@ -18,7 +18,7 @@ from email.message import EmailMessage
 import smtplib
 
 # APP's
-from appCamara.models import Camara, ValorTransporte
+from appCamara.models import Camara, Cotizacion, ValorTransporte
 from appInicio.models import Region, Provincia, Comuna
 from appDocumento.documentos.crear_cotizacion import crearCotizacion
 from appDocumento.correos.envio_correo_cotizacion import enviarCorreoCotizacion
@@ -58,6 +58,26 @@ def inicio(request):
         'valor_km': str(round(_valor_x_km.valor, 0)).replace(',', '.')
     }
     return render(request, "inicio.html", context=_context)
+
+@validarPermisosAutomatica()
+def listar_cotizaciones(request):
+    _data = []
+    _cotizaciones = Cotizacion.objects.filter(registroActivo=True)
+    for _cotizacion in _cotizaciones:
+        _item = {
+            'id': _cotizacion.id,
+            'correlativo': _cotizacion.correlativo,
+            'fecha': _cotizacion.registroFechaCreacion,
+            'neto': _cotizacion.neto,
+            'iva': _cotizacion.iva,
+            'total': _cotizacion.total,
+        }
+        _data.append(_item)
+            
+    _context = {
+        'cotizacion': _data,
+    }
+    return render(request, "listar-cotizaciones.html", context=_context)
 
 
 def pdf_view(request, url):

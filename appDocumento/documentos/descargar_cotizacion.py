@@ -1,61 +1,20 @@
-from decimal import Decimal
+import os
+from django.conf import settings
+from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from datetime import datetime
-from django.db.models import Max
-from appCamara.models import Camara, Cotizacion, ItemCotizacion, ValorTransporte
-from appCamara.dx import correlativoCotizacion
+from appCamara.models import Cotizacion, ItemCotizacion
 
 pdfmetrics.registerFont(TTFont('Vera', 'Vera.ttf'))
 pdfmetrics.registerFont(TTFont('VeraBd', 'VeraBd.ttf'))
 pdfmetrics.registerFont(TTFont('VeraIt', 'VeraIt.ttf'))
 pdfmetrics.registerFont(TTFont('VeraBI', 'VeraBI.ttf'))
 
-def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None, cliente=None):
-    _nombre_cliente = cliente.nombre.upper() if cliente else ''
-    _rut_cliente = cliente.rut if cliente else ''
-    _giro_cliente = cliente.giro.upper() if cliente else ''
-    _direccion_cliente = cliente.direccion.upper() if cliente else ''
-    _comuna_cliente = cliente.comuna.nombre.upper() if cliente else ''
-    _ciudad_cliente = cliente.region.nombre.upper() if cliente else ''
-    _fecha_emision = datetime.now().date().strftime("%d/%m/%Y")
-    _valor_x_km = ValorTransporte.objects.latest('registroFechaCreacion')
-    _total_sub_neto = 0
-    _total_neto = 0
-    _valor_descuento = 0
-    _total = 0
-    _valor_intalacion = 0
-
-    # VALOR INICIAL
-    for camara in camaras:
-        _total_sub_neto += camara.valorNeto
-        _valor_intalacion += Decimal(camara.valorNeto * Decimal(0.15))
-
-    _total_sub_neto += _valor_intalacion
-    # CALCULAR VALOR POR KM
-    if cliente and cliente.region.codigo_iso != 'CL-RM':
-        _valor_km = Decimal(cliente.region.km * _valor_x_km.valor)
-        _total_sub_neto += _valor_km
-
-    _total_neto = _total_sub_neto
-
-    # REALIZAR EL DESCUENTO AL VALOR NETO
-    if Decimal(descuento)>0:
-        _valor_descuento = _total_sub_neto * (Decimal(descuento)/100)
-        _total_neto -= _valor_descuento
-
-
-    # CALCULAR VALOR IVA
-    _valorIva = Decimal(_total_sub_neto * Decimal(0.19))
-
-    # TOTAL DE LA COTIZACIÓN
-    _total = _total_neto + _valorIva
-
-    _correlativo = correlativoCotizacion();
-    _cotizacion = Cotizacion.objects.create(comuna=_comuna_cliente, ciudad=_ciudad_cliente, direccion=_direccion_cliente, rut=_rut_cliente, sennor=_nombre_cliente, giro=_giro_cliente, observacion=observacion, correlativo=int(_correlativo), tipo='CONTADO', descuento=descuento, totalDescuento=_valor_descuento, subNeto=_total_sub_neto, neto=_total_neto, iva=_valorIva, total=_total)
-
+def descargarCotizacion(request, id_cot):
+    cotizacion = Cotizacion.objects.get(id=id_cot)
+    _items = ItemCotizacion.objects.filter(registroActivo=True, cotizacion=cotizacion)
     w, h = letter
     c = canvas.Canvas(r"media/cotizaciones/Cotizacion_camara.pdf", pagesize=letter)
 
@@ -102,7 +61,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # NUMERO FACTURA
     c.setFillColor('red')
     c.setFont('VeraBd', 10)
-    c.drawString(453, h-90, 'N° '+str(_correlativo))
+    c.drawString(453, h-90, 'N° '+str(cotizacion.correlativo))
 
     # LOGO 2
     c.drawImage("static/assets/img/cotizacion/logo_camara_frio.png", 40, h-180, width=112, height=50)
@@ -149,7 +108,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # NOMBRE DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-208, str(_nombre_cliente))
+    c.drawString(75, h-208, str(cotizacion.sennor))
 
     # RUT FORMULARIO
     c.setFillColor('black')
@@ -159,7 +118,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # RUT DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-220, str(_rut_cliente))
+    c.drawString(75, h-220, str(cotizacion.rut))
 
     # GIRO FORMULARIO
     c.setFillColor('black')
@@ -169,7 +128,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # GIRO DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-232, str(_giro_cliente))
+    c.drawString(75, h-232, str(cotizacion.giro))
 
     # DIRECCIÓN FORMULARIO
     c.setFillColor('black')
@@ -179,7 +138,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # DIRECCIÓN DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-244, str(_direccion_cliente))
+    c.drawString(75, h-244, str(cotizacion.direccion))
 
     # COMUNA FORMULARIO
     c.setFillColor('black')
@@ -189,7 +148,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # COMUNA DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-256, str(_comuna_cliente))
+    c.drawString(75, h-256, str(cotizacion.comuna))
 
     # CIUDAD FORMULARIO
     c.setFillColor('black')
@@ -199,7 +158,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # CIUDAD DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(75, h-268, str(_ciudad_cliente))
+    c.drawString(75, h-268, str(cotizacion.ciudad))
 
     # FECHA DE EMISIÓN FORMULARIO
     c.setFillColor('black')
@@ -209,7 +168,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # FECHA DE EMISIÓN DE CLIENTE
     c.setFillColorRGB(0, 0, 0)
     c.setFont('Vera', 8)
-    c.drawString(450, h-208, str(_fecha_emision))
+    c.drawString(450, h-208, str(cotizacion.registroFechaCreacion.strftime("%d/%m/%Y")))
 
     # CONDICIÓN DE PAGO FORMULARIO
     c.setFillColor('black')
@@ -296,15 +255,15 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # OBSERVACIÓN
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawString(23, h-670, str(observacion))
+    c.drawString(23, h-670, str(cotizacion.observacion))
 
     # DATO DE CAMARA
     # descrpción de la camara
     _height = 295
-    for camara in camaras:
+    for _item in _items:
         c.setFillColor('black')
         c.setFont('Vera', 6)
-        c.drawString(103, h-+_height, str(camara.nombre))
+        c.drawString(103, h-+_height, str(_item.descripcion))
 
         # cantidad de la camara
         c.setFillColor('black')
@@ -314,63 +273,13 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
         # precio unitario de la camara
         c.setFillColor('black')
         c.setFont('Vera', 6)
-        c.drawRightString(425, h-_height, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
+        c.drawRightString(425, h-_height, str('$ '+'{:,.0f}'.format(_item.precioUnitario)).replace(',', '.'))
 
         # precio valor de la camara
         c.setFillColor('black')
         c.setFont('Vera', 6)
-        c.drawRightString(580, h-_height, str('$ '+'{:,.0f}'.format(camara.valorNeto)).replace(',', '.'))
-        _item = ItemCotizacion.objects.create(cotizacion= _cotizacion,descripcion=camara.nombre, cantidad=1, precioUnitario=camara.valorNeto, descuento=0, valor=camara.valorNeto)
+        c.drawRightString(580, h-_height, str('$ '+'{:,.0f}'.format(_item.valor)).replace(',', '.'))
         _height += 10
-
-    # descrpción de la intalación
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawString(103, h-+_height, 'Intalación')
-
-    # cantidad de la intalación
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(345, h-+_height, '1')
-
-    # precio unitario de la intalación
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(425, h-+_height, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
-
-    # precio valor de la intalación
-    c.setFillColor('black')
-    c.setFont('Vera', 6)
-    c.drawRightString(580, h-+_height, str('$ '+'{:,.0f}'.format(_valor_intalacion)).replace(',', '.'))
-    _item = ItemCotizacion.objects.create(cotizacion= _cotizacion,descripcion='Intalación', cantidad=1, precioUnitario=_valor_intalacion, descuento=0, valor=_valor_intalacion)
-    _cotizacion.intalacion = _valor_intalacion
-    _cotizacion.save()
-
-    if cliente and cliente.region.codigo_iso != 'CL-RM':
-        _height += 10
-        # DATO DE INTALACIOÓN
-        # descrpción de la camara
-        c.setFillColor('black')
-        c.setFont('Vera', 6)
-        c.drawString(103, h-+_height, 'Transporte y estadía')
-
-        # cantidad de la camara
-        c.setFillColor('black')
-        c.setFont('Vera', 6)
-        c.drawRightString(345, h-+_height, '1')
-
-        # precio unitario de la camara
-        c.setFillColor('black')
-        c.setFont('Vera', 6)
-        c.drawRightString(425, h-+_height, str('$ '+'{:,.0f}'.format(_valor_km)).replace(',', '.'))
-
-        # precio valor de la camara
-        c.setFillColor('black')
-        c.setFont('Vera', 6)
-        c.drawRightString(580, h-+_height, str('$ '+'{:,.0f}'.format(_valor_km)).replace(',', '.'))
-        _item = ItemCotizacion.objects.create(cotizacion= _cotizacion,descripcion='Transporte y estadía', cantidad=1, precioUnitario=_valor_km, descuento=0, valor=_valor_km)
-        _cotizacion.transporte = _valor_km
-        _cotizacion.save()
 
     # RECTANGULO DE TOTALES
     c.setLineWidth(0.1)
@@ -385,17 +294,17 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # DATO DESCUENTO DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawRightString(584, h-662, str('$ '+'{:,.0f}'.format(_total_sub_neto)).replace(',', '.'))
+    c.drawRightString(584, h-662, str('$ '+'{:,.0f}'.format(cotizacion.subNeto)).replace(',', '.'))
 
     # EXENTO DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('VeraBd', 8)
-    c.drawString(450, h-674, 'Descuento: ('+str(descuento)+'%)' )
+    c.drawString(450, h-674, 'Descuento: ('+str(round(cotizacion.descuento, 0))+'%)' )
 
     # DATO EXENTO DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawRightString(584, h-674, str('$ - '+'{:,.0f}'.format(_valor_descuento)).replace(',', '.'))
+    c.drawRightString(584, h-674, str('$ - '+'{:,.0f}'.format(cotizacion.totalDescuento if cotizacion.totalDescuento else 0)).replace(',', '.'))
 
     # NETO DE CUADRO TOTALES
     c.setFillColor('black')
@@ -405,7 +314,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # DATO NETO DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawRightString(584, h-686, '$ '+str('{:,.0f}'.format(_total_neto)).replace(',', '.'))
+    c.drawRightString(584, h-686, '$ '+str('{:,.0f}'.format(cotizacion.neto)).replace(',', '.'))
     # c.drawString(570, h-686, '$ 0')
 
     # IVA DE CUADRO TOTALES
@@ -416,7 +325,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # DATO IVA DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawRightString(584, h-698, '$ '+str('{:,.0f}'.format(_valorIva)).replace(',', '.'))
+    c.drawRightString(584, h-698, '$ '+str('{:,.0f}'.format(cotizacion.iva)).replace(',', '.'))
     # c.drawString(570, h-698, '$ 0')
 
     # TOTAL DE CUADRO TOTALES
@@ -427,7 +336,7 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
     # DATO TOTAL DE CUADRO TOTALES
     c.setFillColor('black')
     c.setFont('Vera', 8)
-    c.drawRightString(584, h-710,'$ '+str('{:,.0f}'.format(_total)).replace(',', '.'))
+    c.drawRightString(584, h-710,'$ '+str('{:,.0f}'.format(cotizacion.total)).replace(',', '.'))
     # c.drawString(570, h-710, '$ 0')
 
     # MENSAJE DE LETRA CHICA
@@ -458,4 +367,9 @@ def crearCotizacion(camaras=None, correo=None, observacion=None, descuento=None,
 
     c.showPage()
     c.save()
-    return True
+
+    file_path = os.path.join(settings.MEDIA_ROOT, r"cotizaciones/Cotizacion_camara.pdf")
+    with open(file_path, 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="cotización.pdf"'
+        return response

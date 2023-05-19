@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from appInicio.models import Comuna
-from appCamara.models import Camara
+from appCamara.models import Camara, Cotizacion
 
 def jsonListarComunas(request, id):
     _data = []
@@ -37,6 +37,24 @@ def jsonListarCamaras(request):
                 'neto': _camara.valorNeto if _camara.valorNeto else '',
                 'iva': _camara.valorIva if _camara.valorIva else '',
                 'ficha': str(_camara.ficha) if _camara.ficha else '',
+            }
+            _data.append(_item)
+    except ValueError:
+        print('Ha ocurrido un error en la view de app inicio!!!')
+    return JsonResponse(_data, safe=False)
+
+def jsonListarCotizaciones(request):
+    _data = []
+    try:
+        _cotizaciones = Cotizacion.objects.filter(registroActivo=True)
+        for _cotizacion in _cotizaciones:
+            _item = {
+                'id': _cotizacion.id,
+                'correlativo': _cotizacion.correlativo,
+                'fecha': _cotizacion.registroFechaCreacion,
+                'neto': _cotizacion.neto,
+                'iva': _cotizacion.iva,
+                'total': _cotizacion.total,
             }
             _data.append(_item)
     except ValueError:

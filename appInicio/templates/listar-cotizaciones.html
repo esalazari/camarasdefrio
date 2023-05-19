@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Inicio{% endblock %}
+
+{% block container %}
+<br><br>
+<div class="col-12">
+    <h4 class='text-center'>Listado de Cotizaciones</h4>
+</div>
+
+<div class="demo-container">
+    <div id="grid">
+        <div id="tablaCamaras"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block partial_js_script %}
+<script>
+    const dataGrid = $("#tablaCamaras").dxDataGrid({
+        dataSource: "{% url 'json-listar-cotizaciones' %}",
+        showBorders: true,
+        showRowLines: true,
+        showColumnLines: true,
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        columnAutoWidth: true,
+        scrolling: {
+            columnRenderingMode: 'virtual',
+        },
+        loadPanel: {
+            enabled: true
+        },
+        searchPanel: {
+            width: 170,
+            visible: true,
+            highlightCaseSensitive: true
+        },
+        paging: {
+            enabled: false,
+            pageSize: 100
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [10, 25, 50, 250, 500, 1000, 2000],
+            showInfo: true
+        },
+        columnChooser: {
+            enabled: true,
+            mode: "select"
+        },
+        "export": {
+            enabled: true,
+            fileName: "Cotizaciones",
+            allowExportSelectedData: false,
+        },
+        columns: [{
+            dataField: "#",
+            cellTemplate: function (cellElement, cellInfo) {
+                cellElement.text(cellInfo.row.rowIndex + 1)
+            },
+            allowHiding: false,
+            showInColumnChooser: false,
+        }, {
+            dataField: "correlativo",
+            caption: "Número de Cotización",
+            dataType: 'number',
+        }, {
+            dataField: "neto",
+            caption: "Neto",
+            dataType: 'number',
+            format: 'currency',
+        }, {
+            dataField: "iva",
+            caption: "IVA",
+            dataType: 'number',
+            format: 'currency',
+        }, {
+            dataField: "total",
+            caption: "Total",
+            dataType: 'number',
+            format: 'currency',
+        }, {
+            dataField: "fecha",
+            caption: "Fecha de Creación",
+            dataType: 'date',
+            format: 'dd-MM-yyyy',
+            alignment: 'right',
+        }, {
+            dataField: '',
+            caption: '',
+            alignment: "center",
+            cellTemplate: function (container, options) {
+                console.log(options)
+                $('<a/>').addClass('dx-link')
+                .text('Descargar')
+                .attr('href', "{% url 'descargar-cotizacion' 0 %}".replace('/0', '/' + options.key.id))
+                .attr('title', 'Descargar')
+                .attr('target', '_black')
+                .appendTo(container);
+            },
+            allowHiding: true,
+            showInColumnChooser: false
+        }]
+    }).dxDataGrid("instance");
+</script>
+{% endblock %}

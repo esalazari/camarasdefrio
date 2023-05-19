@@ -18,12 +18,15 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Ficha
+                        Listar
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#" onclick="abrirModalAgregarFicha()">Agregar Ficha</a></li>
-                        <li><a class="dropdown-item" href="#">Modificar Ficha</a></li>
-                        <li><a class="dropdown-item" href="#">Eliminar Ficha</a></li>
+                        <li><a class="dropdown-item" href="{% url 'inicio' %}">Listar Camaras</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'listar-cotizaciones' %}">Listar Cotizaciones</a>
+                        </li>
+                        <!-- <li><a class="dropdown-item" href="#">Modificar Ficha</a></li>
+                        <li><a class="dropdown-item" href="#">Eliminar Ficha</a></li> -->
                     </ul>
                 </li>
                 <!-- <li class="nav-item">
@@ -32,9 +35,11 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Acciones
+                        Configuración
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#" onclick="abrirModalAgregarFicha()">Agregar Ficha</a>
+                        </li>
                         <li><a class="dropdown-item" href="#" onclick="abrirModalAgregarCamara()">Agregar Cámara</a>
                         </li>
                         <li><a class="dropdown-item" href="#" onclick="abrirModalCambiarValorKm()">Cambiar Valor Km</a>

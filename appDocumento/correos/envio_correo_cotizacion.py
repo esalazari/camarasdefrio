@@ -21,6 +21,7 @@ def enviarCorreoCotizacion(_correo, _camaras, _observacion, _descuento, _cliente
     # Iniciamos los parámetros del script
     remitente = config('EMAIL_HOST_USER')
     destinatarios = [_correo]
+    contacto = config('EMAIL_CONTACTO')
     password = config('EMAIL_HOST_PASSWORD')
     asunto = 'Cotización de Camara de Frio'
 
@@ -88,6 +89,9 @@ def enviarCorreoCotizacion(_correo, _camaras, _observacion, _descuento, _cliente
 
     # Enviamos el mensaje
     sesion_smtp.sendmail(remitente, destinatarios, texto)
+
+    # Enviamos el mensaje
+    sesion_smtp.sendmail(remitente, contacto, texto)
 
     # Cerramos la conexión
     sesion_smtp.quit()
